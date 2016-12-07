@@ -16,11 +16,13 @@ char** pixmap_get_image(unsigned long xpm_code)
 	if (xpm_code == 1)
 		return queen;
 	else if(xpm_code == 2)
-		return square1;
+		return square;
 	else if(xpm_code == 3)
-		return square2;
+		return logo;
 	else if(xpm_code == 4)
-			return logo;
+		return menu;
+	else if(xpm_code == 5)
+		return logo1;
 	else
 		return NULL;
 }

@@ -73,7 +73,7 @@ int game_loop() {
 		}
 
 		if(second_time == 0)
-			if((timer_get_ellapsed_time() - start_time) >= 30)
+			if((timer_get_ellapsed_time() - start_time) >= 5)
 			{
 				second_time = 1;
 				vg_game();

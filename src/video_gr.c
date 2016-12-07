@@ -98,35 +98,79 @@ int vg_exit() {
 
 int vg_start()
 {
+	//DRAW RECTANGLE LOGO
+	vg_draw_rectangle(0, 100, 1024, 200, 56);
+
+	//DRAW LOGO
+	int width;
+	int height;
+	char** logo = pixmap_get_image(5);
+	char* pixmap = read_xpm(logo, &width, &height);
+	vg_draw_pixmap(50, 120, pixmap, width, height);
+
+	//DRAW MENU
+	char** menu = pixmap_get_image(4);
+	pixmap = read_xpm(menu, &width, &height);
+	vg_draw_pixmap(300, 400, pixmap, width, height);
+
+
+	// RTC (?)
+
 	return 0;
 }
 
 int vg_game()
 {
+	vg_draw_rectangle(0, 0, 1024, 700, 0);
+
+	//DRAW SMALL LOGO
+	int width;
+	int height;
+	char** logo = pixmap_get_image(3);
+	char* pixmap = read_xpm(logo, &width, &height);
+	vg_draw_pixmap(25, 15, pixmap, width, height);
+
+	vg_draw_rectangle(244, 30, 663, 663, 63);
+
+	//DRAW MENU
+	char** board= pixmap_get_image(2);
+	char* pixmap1 = read_xpm(board, &width, &height);
+
+	int xi = 250;
+	int yi = 36;
+	int i;
+	int j;
+	for(j = 0; j < 4; j++)
+	{
+		for(i = 0; i < 4; i++)
+		{
+			vg_draw_pixmap(xi, yi, pixmap1, width, height);
+			xi += 162;
+		}
+
+		xi = 250;
+		yi += 162;
+	}
 	return 0;
 }
 
-
-
-
-void vg_draw_square(unsigned short x, unsigned short y, unsigned short size, unsigned long color)
+void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)
 {
 	int i, j;
 
 	char* video_copy = video_mem;
 	video_copy += x + (y*H_RES);
 
-	for(i = 0; i < size; i++)
+	for(i = 0; i < sizex; i++)
 	{
-		for(j = 0; j < size; j++)
+		for(j = 0; j < sizey; j++)
 		{
 			*video_copy = color;
 			video_copy++;
 		}
-		video_copy = video_copy + H_RES - size;
+		video_copy = video_copy + H_RES - sizex;
 	}
 }
-
 
 void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 {
@@ -136,49 +180,6 @@ void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 	*video_copy=color;
 
 }
-
-
-void vg_draw_line(unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, unsigned long color)
-{
-	float dy = yf-yi;
-	float dx = xf-xi;
-
-	float steps;
-	float m = dy/dx;
-
-
-	if(m > 1)
-	{
-		if(fabs(dx)>fabs(dy))
-			steps = fabs(dx);
-		else
-			steps =  fabs(dy);
-	}
-	else
-	{
-		if(fabs(dx)<fabs(dy))
-			steps = fabs(dy);
-		else
-			steps =  fabs(dx);
-	}
-
-
-	float x_increment = dx/steps;
-	float y_increment = dy/steps;
-
-
-	int i;
-	float x = xi;
-	float y = yi;
-
-	for(i = 0; i < steps; i++ )
-	{
-		set_pixel(x, y, color);
-		x = x + x_increment;
-		y = y + y_increment;
-	}
-}
-
 
 void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
 {
@@ -195,19 +196,20 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 	}
 }
 
-void vg_move_pixmap(Sprite* sprite)
-{
-	 unsigned short size;
-	if(sprite->width > sprite->height)
-		size = sprite->width;
-	else
-		size = sprite->height;
-
-	//clean last position
-	vg_draw_square(sprite->x, sprite->y, size, 0);
-
-	sprite->x += sprite->xspeed;
-	sprite->y += sprite->yspeed;
-	vg_draw_pixmap(sprite->x, sprite->y, sprite->map, sprite->width, sprite->height);
-
-}
+//
+//void vg_move_pixmap(Sprite* sprite)
+//{
+//	 unsigned short size;
+//	if(sprite->width > sprite->height)
+//		size = sprite->width;
+//	else
+//		size = sprite->height;
+//
+//	//clean last position
+//	vg_draw_square(sprite->x, sprite->y, size, 0);
+//
+//	sprite->x += sprite->xspeed;
+//	sprite->y += sprite->yspeed;
+//	vg_draw_pixmap(sprite->x, sprite->y, sprite->map, sprite->width, sprite->height);
+//
+//}
