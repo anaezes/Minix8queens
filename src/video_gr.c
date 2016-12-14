@@ -96,6 +96,7 @@ int vg_exit() {
 }
 
 
+
 int vg_start()
 {
 	//DRAW RECTANGLE LOGO
@@ -113,11 +114,16 @@ int vg_start()
 	pixmap = read_xpm(menu, &width, &height);
 	vg_draw_pixmap(300, 400, pixmap, width, height);
 
+	//teste mouse
+	char** mouse= pixmap_get_image(6);
+	pixmap = read_xpm(mouse, &width, &height);
+	vg_draw_pixmap(200, 400, pixmap, width, height);
 
 	// RTC (?)
 
 	return 0;
 }
+
 
 int vg_game()
 {
@@ -151,8 +157,13 @@ int vg_game()
 		xi = 250;
 		yi += 162;
 	}
+
+	vg_draw_rectangle(30, 716, 964, 30, 56);
+	vg_draw_rectangle(50, 716, 944, 30, 6);
+
 	return 0;
 }
+
 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)
 {
@@ -161,9 +172,9 @@ void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex,
 	char* video_copy = video_mem;
 	video_copy += x + (y*H_RES);
 
-	for(i = 0; i < sizex; i++)
+	for(i = 0; i < sizey; i++)
 	{
-		for(j = 0; j < sizey; j++)
+		for(j = 0; j < sizex; j++)
 		{
 			*video_copy = color;
 			video_copy++;
@@ -171,6 +182,8 @@ void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex,
 		video_copy = video_copy + H_RES - sizex;
 	}
 }
+
+
 
 void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 {

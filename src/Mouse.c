@@ -3,8 +3,6 @@
 
 unsigned int mouse_hook_id = MOUSE_IRQ;
 
-
-
 /* Mouse functions */
 
 

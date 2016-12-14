@@ -23,6 +23,8 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return menu;
 	else if(xpm_code == 5)
 		return logo1;
+	else if(xpm_code == 6)
+		return mouse;
 	else
 		return NULL;
 }
