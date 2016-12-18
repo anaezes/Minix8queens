@@ -19,6 +19,7 @@ game_st init_game()
 	game_st state;
 	state.n_queens = 0;
 	state.curr_state = INIT;
+	state.graphics_state = NULL;
 
 	int i, j;
 	for(i = 0; i < BOARD_SIZE; i++)
@@ -65,7 +66,9 @@ int game_loop() {
 	kbc_mouse_init();
 
 	vg_start();
+
 	game_st game_state = init_game();
+	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 
 
 	int count = 0;
@@ -117,28 +120,18 @@ int game_loop() {
 					if (packet_async == 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 						if (pos == 2) {
-							mouse_print_packet(packet);
-
 
 							event_t evt;
-							printf("curr_state_x: %d\n", state.curr_position_x);
-							printf("curr_state_y: %d\n\n", state.curr_position_y);
 
+							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 							update_mouse_state(&state, packet);
 							graphics_invalidated = 1;
-							//
-							//							printf("delta_x: %d\n", state.delta_x);
-							//							printf("delta_y: %d\n\n", state.delta_y);
-							//
-							//							printf("delta_x: %d\n", state.curr_position_x);
-							//							printf("delta_y: %d\n\n", state.curr_position_y);
 
 							if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
 									&& (state.curr_position_y >= 541 && state.curr_position_y <= 593)) {
 								if (state.r_button_state) {
 									evt.type = MOVE;
 									game_state.curr_state = PLAY;
-									//vg_game();
 								}
 							}
 
@@ -146,6 +139,7 @@ int game_loop() {
 						}
 					}
 				}
+
 				if (msg.NOTIFY_ARG & timer_irq)
 					timer_int_handler();
 
@@ -165,13 +159,14 @@ int game_loop() {
 		}
 		if(graphics_invalidated == 1)
 		{
-			if(game_state.curr_state == INIT)
-				vg_start();
-			else if(game_state.curr_state == PLAY)
-			{
-				vg_game();
-				vg_draw_pixmap_queen(x+3, y+5, pixmap, width, height);
-			}
+
+//			if(game_state.curr_state == PLAY)
+//			{
+//				vg_game();
+//				vg_draw_pixmap(x+3, y+5, pixmap, width, height);
+//			}
+
+			//game_state.graphics_state = vg_get_area_state(state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
@@ -210,28 +205,28 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color) {
 		*x += 81;
 		if(*x > 850)
 			*x = 251;
-		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);
+		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xCB://left
 		if(*x-81 < 251)
 			break;
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*x -= 81;
-		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);
+		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xC8: //up
 		if(*y-81 < 35)
 			break;
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*y -= 81;
-		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);
+		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xD0: //down
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*y += 81;
 		if(*y > 650)
 			*y = 35;
-		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);
+		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0x1C: //ENTER
 		//check algorithm
@@ -240,7 +235,7 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color) {
 		*color = 63;
 
 		pixmap = read_xpm(queen, &width, &height);
-		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);
+		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 
 		return 1;
 		break;

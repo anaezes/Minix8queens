@@ -16,15 +16,16 @@ typedef struct event_t
 	ev_type_t type;
 } event_t;
 
-typedef struct game_state
+typedef struct game_st
 {
 	state_t curr_state;
 	int board[BOARD_SIZE][BOARD_SIZE];
 	int n_queens;
-} game_state;
+	int* graphics_state;
+} game_st;
 
 
-game_state init_game();
+game_st init_game();
 
 int game_loop();
 

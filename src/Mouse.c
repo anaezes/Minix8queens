@@ -2,8 +2,8 @@
 
 
 unsigned int mouse_hook_id = MOUSE_IRQ;
-#define MOUSE_HEIGHT 33
-#define MOUSE_WIDTH 40
+
+
 /* Mouse functions */
 mouse_state init_mouse_state()
 {
@@ -37,8 +37,6 @@ int mouse_unsubscribe_int()
 
 	return 1;
 }
-
-
 
 void mouse_print_packet(unsigned long *packet)
 {
@@ -140,18 +138,57 @@ short absolute_length(short length)
 
 
 
-void xy_abs_values(unsigned long *packet)
+void transform_mouse_values(mouse_state* state, unsigned long *packet)
 {
-	//verify x postive ?
-	if((packet[0] & BIT(4)) != 0)
-		packet[1] = (packet[1] | 0xFF00);
+	//compute delta_x
+	if((packet[0] & BIT(6)) != 0)
+		state->x_overflow = 1;
+	else
+		state->x_overflow = 0;
 
+	if((packet[0] & X_SIGN_BIT) != 0)
+		state->x_sign = 1;
+	else
+		state->x_sign = 0;
 
-	//verify y positive ?
-	if((packet[0] & BIT(5)) != 0)
-		packet[2] = (packet[2] | 0xFF00);
+	if(state->x_overflow)
+	{
+		if((packet[0] & X_SIGN_BIT) != 0)
+			state->delta_x = (-1<<8);
+		else
+			state->delta_x = (1<<8)-1;
+	}
+	else
+	{
+		if((packet[0] & X_SIGN_BIT) != 0)
+			state->delta_x = ((-1<<8) | packet[1]);
+		else
+			state->delta_x = (int)packet[1];
+	}
+
+	//Compute delta_y
+	if((packet[0] & BIT(7)) != 0)
+		state->y_overflow = 1;
+	else
+		state->y_overflow = 0;
+
+	if(state->y_overflow)
+	{
+		if((packet[0] & Y_SIGN_BIT) != 0)
+			state->delta_y = (-1<<8);
+		else
+			state->delta_y = (1<<8)-1;
+	}
+	else
+	{
+		if((packet[0] & Y_SIGN_BIT) != 0)
+			state->delta_y = ((-1<<8) | packet[2]);
+		else
+			state->delta_y = (int)packet[2];
+
+	}
+
 }
-
 
 void update_mouse_state(mouse_state* state, unsigned long *packet)
 {
@@ -161,14 +198,17 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 	else
 		state->r_button_state = 0;
 
-	xy_abs_values(packet);
+	transform_mouse_values(state, packet);
 
-	state->delta_x = (int)packet[1];
-	state->delta_y = (int)packet[2];
+	printf("x %d %d\n", state->curr_position_x, state->delta_x);
+	printf("y %d %d\n", state->curr_position_y, state->delta_y);
+	printf("yf: %d\n", (state->curr_position_y - state->delta_y + MOUSE_HEIGHT ));
+	printf("xf: %d\n\n", (state->curr_position_x + state->delta_x + MOUSE_WIDTH));
 
-	if(state->curr_position_y - state->delta_y >= 0 && state->curr_position_y - state->delta_y + MOUSE_HEIGHT <= V_RES)
-		state->curr_position_y -= state->delta_y;
-	if(state->curr_position_x + state->delta_x >= 0 && state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES)
+
+	if((state->curr_position_x + state->delta_x >= 0) && (state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES))
 		state->curr_position_x += state->delta_x;
+	if((state->curr_position_y - state->delta_y >= 0) && (state->curr_position_y - state->delta_y + MOUSE_HEIGHT <= V_RES))
+		state->curr_position_y -= state->delta_y;
 
 }
