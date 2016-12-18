@@ -75,8 +75,6 @@ void mouse_print_packet(unsigned long *packet)
 	printf("Y=%d  \n", (char)packet[2]);
 }
 
-
-
 void mouse_print_config(unsigned long *config)
 {
 	// Remote
@@ -158,8 +156,54 @@ mouse_state generate_state(unsigned long *packet)
 	else
 		state.r_button_state = 0;
 
-	state.delta_x = (int)packet[1];
-	state.delta_y = (int)packet[2];
+	//xy_abs_values(&packet);
+
+	//compute delta_x
+	if((packet[0] & BIT(6)) != 0)
+		state.x_overflow = 1;
+	else
+		state.x_overflow = 0;
+
+	if(state.x_overflow)
+	{
+		if((packet[0] & X_SIGN_BIT) != 0)
+			state.delta_x = (1<<8)-1;
+		else
+			state.delta_x = (1<<8)+1;
+	}
+	else
+	{
+		if((packet[0] & X_SIGN_BIT) != 0)
+			state.delta_x = ((-1<<8) | packet[1]);
+		else
+			state.delta_x = (int)packet[1];
+	}
+
+
+	//Compute delta_y
+	if((packet[0] & BIT(7)) != 0)
+		state.y_overflow = 1;
+	else
+		state.y_overflow = 0;
+
+
+	if(state.y_overflow)
+	{
+		if((packet[0] & Y_SIGN_BIT) != 0)
+			state.delta_y = (1<<8)-1;
+		else
+			state.delta_y = (1<<8)+1;
+	}
+	else
+	{
+		if((packet[0] & Y_SIGN_BIT) != 0)
+			state.delta_y = ((-1<<8) | packet[2]);
+		else
+			state.delta_y = (int)packet[2];
+	}
+
+	state.curr_position_y -= state.delta_y;
+	state.curr_position_x += state.delta_x;
 
 	return state;
 }

@@ -8,14 +8,18 @@
 #include "Driver.h"
 #include "i8042.h"
 
-typedef enum {INIT, DRAW, COMP} state_t;
-typedef enum {RDOWN, RUP, MOVE} ev_type_t;
+#define INIT_MOUSE_STATE(X) mouse_state X = {.curr_position_x = 512, .curr_position_y = 384}
 
 typedef struct mouse_state
 {
 	int delta_x;
 	int delta_y;
+	short x_overflow;
+	short y_overflow;
 	short r_button_state;
+	int curr_position_x;
+	int curr_position_y;
+
 } mouse_state;
 
 

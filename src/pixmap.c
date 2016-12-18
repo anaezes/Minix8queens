@@ -14,7 +14,7 @@ char** pixmap_get_image(unsigned long xpm_code)
 {
 
 	if (xpm_code == 1)
-		return queen;
+		return queenW;
 	else if(xpm_code == 2)
 		return square;
 	else if(xpm_code == 3)
@@ -28,6 +28,7 @@ char** pixmap_get_image(unsigned long xpm_code)
 	else
 		return NULL;
 }
+
 
 /**
  *  @author Joao Cardoso (jcard@fe.up.pt) ????

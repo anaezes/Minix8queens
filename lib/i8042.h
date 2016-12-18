@@ -58,6 +58,8 @@
 #define MOUSE_DISABLE_DR	0xF5
 #define MOUSE_STATUS_REQ	0xE9
 #define MOUSE_ENABLE		0xA8
+#define X_SIGN_BIT			BIT(4)
+#define Y_SIGN_BIT			BIT(5)
 
 #define MOUSE_PACKET_SIZE	3
 #define MOUSE_CONFIG_SIZE	3

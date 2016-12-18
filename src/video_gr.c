@@ -114,11 +114,6 @@ int vg_start()
 	pixmap = read_xpm(menu, &width, &height);
 	vg_draw_pixmap(300, 400, pixmap, width, height);
 
-	//teste mouse
-	char** mouse= pixmap_get_image(6);
-	pixmap = read_xpm(mouse, &width, &height);
-	vg_draw_pixmap(200, 400, pixmap, width, height);
-
 	// RTC (?)
 
 	return 0;
@@ -183,18 +178,46 @@ void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex,
 	}
 }
 
-
-
-void set_pixel(unsigned short x, unsigned short y, unsigned long color)
+void vg_draw_mouse_pointer(int x, int y)
 {
-
-	char* video_copy = video_mem;
-	video_copy = video_copy + ((unsigned short)x + (unsigned short)y * h_res) ;
-	*video_copy=color;
+	int width;
+	int height;
+	char** mouse= pixmap_get_image(6);
+	char* pixmap = read_xpm(mouse, &width, &height);
+	vg_draw_pixmap(x, y, pixmap, width, height);
 
 }
 
-void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
+void set_pixel(unsigned short x, unsigned short y, unsigned long color)
+{
+	if(color != 2 )
+	{
+		char* video_copy = video_mem;
+		video_copy = video_copy + ((unsigned short)x + (unsigned short)y * h_res) ;
+		*video_copy=color;
+	}
+
+}
+
+
+int colision_x(unsigned int x, unsigned int y)
+{
+	if(video_mem + ((unsigned short)(x + 41) + (unsigned short)y * h_res) == 6)
+		return 1;
+
+	if(video_mem + ((unsigned short)(x - 41) + (unsigned short)y * h_res) == 6)
+		return 2;
+
+	return 0;
+}
+
+int get_pixel(unsigned short x, unsigned short y)
+{
+	//gives a color of a pixel
+	return video_mem + ((unsigned short)x + (unsigned short)y * h_res);
+}
+
+void vg_draw_pixmap_queen(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
 {
 	int i = 0;
 	while(i < width)
@@ -209,6 +232,21 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 	}
 }
 
+void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
+{
+	int i = 0;
+	while(i < width)
+	{
+		int j = 0;
+		while(j < height)
+		{
+
+			set_pixel(xi + i, yi + j, *(pixmap + (i + j * width)));
+			j++;
+		}
+		i++;
+	}
+}
 //
 //void vg_move_pixmap(Sprite* sprite)
 //{
