@@ -8,7 +8,7 @@ static char *mouse[] = {
 /* columns rows colors chars-per-pixel */
 "40 33 3",
 ". 63",
-"X 0",
+"X 2",
 "+ 56",
 "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 "XXXXXX++XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
