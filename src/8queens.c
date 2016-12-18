@@ -197,8 +197,6 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color) {
 	case 0xCD: //right
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*x += 81;
-		if(colision_x(x, y) == 1)
-			*x += 81;
 		if(*x > 850)
 			*x = 251;
 		vg_draw_pixmap_queen(*x+3, *y+5, pixmap, width, height);

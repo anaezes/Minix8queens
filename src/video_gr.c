@@ -199,22 +199,10 @@ void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 
 }
 
-
-int colision_x(unsigned int x, unsigned int y)
-{
-	if(video_mem + ((unsigned short)(x + 41) + (unsigned short)y * h_res) == 6)
-		return 1;
-
-	if(video_mem + ((unsigned short)(x - 41) + (unsigned short)y * h_res) == 6)
-		return 2;
-
-	return 0;
-}
-
 int get_pixel(unsigned short x, unsigned short y)
 {
 	//gives a color of a pixel
-	return video_mem + ((unsigned short)x + (unsigned short)y * h_res);
+	return *(video_mem + ((unsigned short)x + (unsigned short)y * h_res));
 }
 
 void vg_draw_pixmap_queen(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
