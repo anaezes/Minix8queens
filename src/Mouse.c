@@ -2,9 +2,16 @@
 
 
 unsigned int mouse_hook_id = MOUSE_IRQ;
-
+#define MOUSE_HEIGHT 33
+#define MOUSE_WIDTH 40
 /* Mouse functions */
-
+mouse_state init_mouse_state()
+{
+	mouse_state state;
+	state.curr_position_x = 512;
+	state.curr_position_y = 384;
+	return state;
+}
 
 // subscribes and enables mouse interrupts
 int mouse_subscribe_int(void)
@@ -146,64 +153,22 @@ void xy_abs_values(unsigned long *packet)
 }
 
 
-
-mouse_state generate_state(unsigned long *packet)
+void update_mouse_state(mouse_state* state, unsigned long *packet)
 {
-	mouse_state state;
 
 	if((packet[0] & BIT(1)) != 0)
-		state.r_button_state = 1;
+		state->r_button_state = 1;
 	else
-		state.r_button_state = 0;
+		state->r_button_state = 0;
 
-	//xy_abs_values(&packet);
+	xy_abs_values(packet);
 
-	//compute delta_x
-	if((packet[0] & BIT(6)) != 0)
-		state.x_overflow = 1;
-	else
-		state.x_overflow = 0;
+	state->delta_x = (int)packet[1];
+	state->delta_y = (int)packet[2];
 
-	if(state.x_overflow)
-	{
-		if((packet[0] & X_SIGN_BIT) != 0)
-			state.delta_x = (1<<8)-1;
-		else
-			state.delta_x = (1<<8)+1;
-	}
-	else
-	{
-		if((packet[0] & X_SIGN_BIT) != 0)
-			state.delta_x = ((-1<<8) | packet[1]);
-		else
-			state.delta_x = (int)packet[1];
-	}
+	if(state->curr_position_y - state->delta_y >= 0 && state->curr_position_y - state->delta_y + MOUSE_HEIGHT <= V_RES)
+		state->curr_position_y -= state->delta_y;
+	if(state->curr_position_x + state->delta_x >= 0 && state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES)
+		state->curr_position_x += state->delta_x;
 
-
-	//Compute delta_y
-	if((packet[0] & BIT(7)) != 0)
-		state.y_overflow = 1;
-	else
-		state.y_overflow = 0;
-
-
-	if(state.y_overflow)
-	{
-		if((packet[0] & Y_SIGN_BIT) != 0)
-			state.delta_y = (1<<8)-1;
-		else
-			state.delta_y = (1<<8)+1;
-	}
-	else
-	{
-		if((packet[0] & Y_SIGN_BIT) != 0)
-			state.delta_y = ((-1<<8) | packet[2]);
-		else
-			state.delta_y = (int)packet[2];
-	}
-
-	state.curr_position_y -= state.delta_y;
-	state.curr_position_x += state.delta_x;
-
-	return state;
 }

@@ -69,6 +69,7 @@ Driver.o:	../lib/Driver.h
 Driver.o:	../lib/Keyboard.h
 Driver.o:	../lib/Mouse.h
 Driver.o:	../lib/i8042.h
+Driver.o:	../lib/vbe.h
 Driver.o:	/usr/include/errno.h
 Driver.o:	/usr/include/limits.h
 Driver.o:	/usr/include/machine/bios.h
@@ -103,6 +104,7 @@ Driver.o:	/usr/include/minix/u64.h
 Driver.o:	/usr/include/minix/vm.h
 Driver.o:	/usr/include/stdint.h
 Driver.o:	/usr/include/sys/cdefs.h
+Driver.o:	/usr/include/sys/mman.h
 Driver.o:	/usr/include/sys/null.h
 Driver.o:	/usr/include/sys/param.h
 Driver.o:	/usr/include/sys/types.h
@@ -125,6 +127,7 @@ Keyboard.o:	../lib/Driver.h
 Keyboard.o:	../lib/Keyboard.h
 Keyboard.o:	../lib/Mouse.h
 Keyboard.o:	../lib/i8042.h
+Keyboard.o:	../lib/vbe.h
 Keyboard.o:	/usr/include/errno.h
 Keyboard.o:	/usr/include/limits.h
 Keyboard.o:	/usr/include/machine/bios.h
@@ -159,6 +162,7 @@ Keyboard.o:	/usr/include/minix/u64.h
 Keyboard.o:	/usr/include/minix/vm.h
 Keyboard.o:	/usr/include/stdint.h
 Keyboard.o:	/usr/include/sys/cdefs.h
+Keyboard.o:	/usr/include/sys/mman.h
 Keyboard.o:	/usr/include/sys/null.h
 Keyboard.o:	/usr/include/sys/param.h
 Keyboard.o:	/usr/include/sys/types.h
@@ -181,6 +185,7 @@ Mouse.o:	../lib/Driver.h
 Mouse.o:	../lib/Keyboard.h
 Mouse.o:	../lib/Mouse.h
 Mouse.o:	../lib/i8042.h
+Mouse.o:	../lib/vbe.h
 Mouse.o:	/usr/include/errno.h
 Mouse.o:	/usr/include/limits.h
 Mouse.o:	/usr/include/machine/bios.h
@@ -215,6 +220,7 @@ Mouse.o:	/usr/include/minix/u64.h
 Mouse.o:	/usr/include/minix/vm.h
 Mouse.o:	/usr/include/stdint.h
 Mouse.o:	/usr/include/sys/cdefs.h
+Mouse.o:	/usr/include/sys/mman.h
 Mouse.o:	/usr/include/sys/null.h
 Mouse.o:	/usr/include/sys/param.h
 Mouse.o:	/usr/include/sys/types.h

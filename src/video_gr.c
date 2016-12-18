@@ -188,6 +188,11 @@ void vg_draw_mouse_pointer(int x, int y)
 
 }
 
+void clean_position(unsigned short xi, unsigned short yi, int width, int height )
+{
+
+}
+
 void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 {
 	if(color != 2 )

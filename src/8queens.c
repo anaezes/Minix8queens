@@ -14,9 +14,9 @@ unsigned long packet[MOUSE_PACKET_SIZE];
 unsigned long config[MOUSE_CONFIG_SIZE];
 unsigned int pos = 0;
 
-game_state init_game()
+game_st init_game()
 {
-	game_state state;
+	game_st state;
 	state.n_queens = 0;
 	state.curr_state = INIT;
 
@@ -31,7 +31,6 @@ game_state init_game()
 
 int game_loop() {
 
-	state_t curr_state = INIT;
 	char* vram_address = vg_init(GRAPHIC_MODE);
 	if (vram_address == NULL) {
 		printf("Error\n");
@@ -65,9 +64,9 @@ int game_loop() {
 
 	kbc_mouse_init();
 
-	printf("******* MOUSE: %d\n", irq_set_mouse);
-
 	vg_start();
+	game_st game_state = init_game();
+
 
 	int count = 0;
 	int finished = 0;
@@ -76,8 +75,11 @@ int game_loop() {
 
 	int packet_async = 1;
 	short curr_length = 0;
-	mouse_state state;
-	INIT_MOUSE_STATE(mouse_state);
+
+	mouse_state state = init_mouse_state();
+
+	// if graphics need to be repainted
+	int graphics_invalidated = 0;
 
 	int x = 251;
 	int y = 35;
@@ -91,7 +93,7 @@ int game_loop() {
 	unsigned long scancode = 0x00;
 	int ipc_status, r;
 	message msg;
-	while (curr_state != END) {
+	while (game_state.curr_state != END) {
 		if (driver_receive(ANY, &msg, &ipc_status) != 0) {
 			printf("driver_receive failed with: %d", r);
 			continue;
@@ -101,7 +103,8 @@ int game_loop() {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set_mouse) {
-					printf("pim............\n");
+					//printf("pim............\n");
+
 
 					sys_inb(KBC_DATA_BUFFER, &packet[pos]);
 
@@ -116,24 +119,26 @@ int game_loop() {
 						if (pos == 2) {
 							mouse_print_packet(packet);
 
+
 							event_t evt;
 							printf("curr_state_x: %d\n", state.curr_position_x);
 							printf("curr_state_y: %d\n\n", state.curr_position_y);
 
-							state = generate_state(packet);
-
-							printf("delta_x: %d\n", state.delta_x);
-							printf("delta_y: %d\n\n", state.delta_y);
-
-							printf("delta_x: %d\n", state.curr_position_x);
-							printf("delta_y: %d\n\n", state.curr_position_y);
+							update_mouse_state(&state, packet);
+							graphics_invalidated = 1;
+							//
+							//							printf("delta_x: %d\n", state.delta_x);
+							//							printf("delta_y: %d\n\n", state.delta_y);
+							//
+							//							printf("delta_x: %d\n", state.curr_position_x);
+							//							printf("delta_y: %d\n\n", state.curr_position_y);
 
 							if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
 									&& (state.curr_position_y >= 541 && state.curr_position_y <= 593)) {
 								if (state.r_button_state) {
 									evt.type = MOVE;
-									curr_state = PLAY;
-									vg_game();
+									game_state.curr_state = PLAY;
+									//vg_game();
 								}
 							}
 
@@ -150,7 +155,7 @@ int game_loop() {
 					move_handler(scancode, &x, &y, &color);
 					//set state machine in the last state
 					if (scancode == DRIVER_END_SCODE)
-						curr_state = END;
+						game_state.curr_state = END;
 				}
 
 				break;
@@ -158,19 +163,25 @@ int game_loop() {
 				break;
 			}
 		}
-
-		if(curr_state == PLAY)
+		if(graphics_invalidated == 1)
 		{
-			vg_game();
-		}
-
-		//vg_draw_mouse_pointer(state.delta_x,state.delta_y);
-		if (second_time == 0)
-			if ((timer_get_ellapsed_time() - start_time) >= 5) {
-				second_time = 1;
+			if(game_state.curr_state == INIT)
+				vg_start();
+			else if(game_state.curr_state == PLAY)
+			{
 				vg_game();
 				vg_draw_pixmap_queen(x+3, y+5, pixmap, width, height);
 			}
+			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+			graphics_invalidated = 0;
+		}
+
+		//		if (second_time == 0)
+		//			if ((timer_get_ellapsed_time() - start_time) >= 5) {
+		//				second_time = 1;
+		//				vg_game();
+		//				vg_draw_pixmap_queen(x+3, y+5, pixmap, width, height);
+		//			}
 	}
 
 	vg_exit();
