@@ -70,7 +70,6 @@ int game_loop() {
 	game_st game_state = init_game();
 	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 
-
 	int count = 0;
 	int finished = 0;
 	int second_time = 0;
@@ -92,6 +91,12 @@ int game_loop() {
 	char** queen = pixmap_get_image(1);
 	char* pixmap = read_xpm(queen, &width, &height);
 
+	//rectangle time
+	int xi = 30;
+	int yi = 716;
+	int  widthR = 964;
+	int heightR = 30;
+	unsigned colorR = 6;
 
 	unsigned long scancode = 0x00;
 	int ipc_status, r;
@@ -106,14 +111,10 @@ int game_loop() {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set_mouse) {
-					//printf("pim............\n");
-
 
 					sys_inb(KBC_DATA_BUFFER, &packet[pos]);
 
-					if ((count == 0
-							&& ((packet[pos] & BIT(3))
-									&& (packet[pos] != KBC_ACK))) != 0) {
+					if ((count == 0 && ((packet[pos] & BIT(3))&& (packet[pos] != KBC_ACK))) != 0) {
 						packet_async = 0;
 					}
 
@@ -127,11 +128,17 @@ int game_loop() {
 							update_mouse_state(&state, packet);
 							graphics_invalidated = 1;
 
-							if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
-									&& (state.curr_position_y >= 541 && state.curr_position_y <= 593)) {
-								if (state.r_button_state) {
-									evt.type = MOVE;
-									game_state.curr_state = PLAY;
+							if(game_state.curr_state == INIT)
+							{
+								if (state.l_button_state == 1)
+								{
+									if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
+											&& (state.curr_position_y >= 541 && state.curr_position_y <= 593))
+									{
+										evt.type = MOVE;
+										game_state.curr_state = PLAY;
+										start_time = timer_get_ellapsed_time();
+									}
 								}
 							}
 
@@ -141,15 +148,32 @@ int game_loop() {
 				}
 
 				if (msg.NOTIFY_ARG & timer_irq)
+				{
 					timer_int_handler();
+//					if(game_state.curr_state == INIT)
+//						vg_start();
+//					else if(game_state.curr_state == PLAY)
+//						vg_game();
+				}
 
 				if (msg.NOTIFY_ARG & irq_set) {
 					int n_bytes = kb_int_handler(&scancode);
 					kb_print_scancode(scancode, n_bytes);
-					move_handler(scancode, &x, &y, &color);
+
 					//set state machine in the last state
 					if (scancode == DRIVER_END_SCODE)
 						game_state.curr_state = END;
+					if (game_state.curr_state == INIT && scancode == 0x1C)
+					{
+						game_state.curr_state = PLAY;
+						vg_game();
+						vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
+						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
+						start_time = timer_get_ellapsed_time();
+					}
+					if(game_state.curr_state == PLAY)
+						move_handler(scancode, &x, &y, &color);
+
 				}
 
 				break;
@@ -157,26 +181,34 @@ int game_loop() {
 				break;
 			}
 		}
+
 		if(graphics_invalidated == 1)
 		{
-
-//			if(game_state.curr_state == PLAY)
-//			{
-//				vg_game();
-//				vg_draw_pixmap(x+3, y+5, pixmap, width, height);
-//			}
-
+			//free(game_state.graphics_state);
 			//game_state.graphics_state = vg_get_area_state(state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
 
-		//		if (second_time == 0)
-		//			if ((timer_get_ellapsed_time() - start_time) >= 5) {
-		//				second_time = 1;
-		//				vg_game();
-		//				vg_draw_pixmap_queen(x+3, y+5, pixmap, width, height);
-		//			}
+		if(game_state.curr_state == PLAY)
+		{
+			if((timer_get_ellapsed_time() - start_time) == 1)
+			{
+				if(widthR > 0)
+				{
+					xi += 2;
+					widthR -= 2;
+
+					vg_draw_rectangle(30, 716, 964, 30, 56);
+					vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
+					start_time = timer_get_ellapsed_time();
+				}
+				else
+				{
+					//game over ?
+				}
+			}
+		}
 	}
 
 	vg_exit();
