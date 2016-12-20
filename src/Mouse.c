@@ -8,6 +8,8 @@ unsigned int mouse_hook_id = MOUSE_IRQ;
 mouse_state init_mouse_state()
 {
 	mouse_state state;
+	state.l_button_state = 0;
+	state.r_button_state = 0;
 	state.curr_position_x = 512;
 	state.curr_position_y = 384;
 	return state;
@@ -126,18 +128,6 @@ void mouse_print_config(unsigned long *config)
 
 }
 
-
-
-short absolute_length(short length)
-{
-	if(length < 0)
-		length = (length & 0xFF) + 1;
-
-	return length;
-}
-
-
-
 void transform_mouse_values(mouse_state* state, unsigned long *packet)
 {
 	//compute delta_x
@@ -158,9 +148,6 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 			state->delta_x = (int)packet[1];
 	}
 
-
-
-
 	//Compute delta_y
 	if((packet[0] & BIT(7)) != 0)
 	{
@@ -174,13 +161,13 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 	{
 		state->y_overflow = 0;
 		if((packet[0] & BIT(5)) != 0)
-			state->delta_y = ((-1<<8) | packet[1]);
+			state->delta_y = ((-1<<8) | packet[2]);
 		else
 			state->delta_y = (int)packet[2];
 	}
 
-
 }
+
 
 void update_mouse_state(mouse_state* state, unsigned long *packet)
 {
@@ -202,7 +189,6 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 	printf("yf: %d\n", (state->curr_position_y - state->delta_y + MOUSE_HEIGHT ));
 	printf("xf: %d\n\n", (state->curr_position_x + state->delta_x + MOUSE_WIDTH));
 
-
 	if((state->curr_position_x + state->delta_x >= 0) && (state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES))
 		state->curr_position_x += state->delta_x;
 	else if(state->curr_position_x + state->delta_x < 0)
@@ -219,3 +205,5 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 		state->curr_position_y = V_RES - MOUSE_HEIGHT;
 
 }
+
+
