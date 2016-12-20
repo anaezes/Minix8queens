@@ -21,7 +21,8 @@ typedef struct game_st
 	state_t curr_state;
 	int board[BOARD_SIZE][BOARD_SIZE];
 	int n_queens;
-	int* graphics_state;
+	char* graphics_state;
+
 } game_st;
 
 

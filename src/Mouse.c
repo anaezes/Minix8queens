@@ -142,51 +142,43 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 {
 	//compute delta_x
 	if((packet[0] & BIT(6)) != 0)
-		state->x_overflow = 1;
-	else
-		state->x_overflow = 0;
-
-	if((packet[0] & X_SIGN_BIT) != 0)
-		state->x_sign = 1;
-	else
-		state->x_sign = 0;
-
-	if(state->x_overflow)
 	{
-		if((packet[0] & X_SIGN_BIT) != 0)
+		state->x_overflow = 1;
+		if((packet[0] & BIT(4)) != 0)
 			state->delta_x = (-1<<8);
 		else
 			state->delta_x = (1<<8)-1;
 	}
 	else
 	{
-		if((packet[0] & X_SIGN_BIT) != 0)
+		state->x_overflow = 0;
+		if((packet[0] & BIT(4)) != 0)
 			state->delta_x = ((-1<<8) | packet[1]);
 		else
 			state->delta_x = (int)packet[1];
 	}
 
+
+
+
 	//Compute delta_y
 	if((packet[0] & BIT(7)) != 0)
-		state->y_overflow = 1;
-	else
-		state->y_overflow = 0;
-
-	if(state->y_overflow)
 	{
-		if((packet[0] & Y_SIGN_BIT) != 0)
+		state->y_overflow = 1;
+		if((packet[0] & BIT(5)) != 0)
 			state->delta_y = (-1<<8);
 		else
 			state->delta_y = (1<<8)-1;
 	}
 	else
 	{
-		if((packet[0] & Y_SIGN_BIT) != 0)
-			state->delta_y = ((-1<<8) | packet[2]);
+		state->y_overflow = 0;
+		if((packet[0] & BIT(5)) != 0)
+			state->delta_y = ((-1<<8) | packet[1]);
 		else
 			state->delta_y = (int)packet[2];
-
 	}
+
 
 }
 
@@ -198,6 +190,11 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 	else
 		state->r_button_state = 0;
 
+	if((packet[0] & BIT(2)) != 0)
+		state->l_button_state = 1;
+	else
+		state->l_button_state = 0;
+
 	transform_mouse_values(state, packet);
 
 	printf("x %d %d\n", state->curr_position_x, state->delta_x);
@@ -208,7 +205,17 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 
 	if((state->curr_position_x + state->delta_x >= 0) && (state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES))
 		state->curr_position_x += state->delta_x;
+	else if(state->curr_position_x + state->delta_x < 0)
+		state->curr_position_x = 0;
+	else if((state->curr_position_x + state->delta_x + MOUSE_WIDTH) > H_RES)
+		state->curr_position_x = H_RES - MOUSE_WIDTH;
+
+
 	if((state->curr_position_y - state->delta_y >= 0) && (state->curr_position_y - state->delta_y + MOUSE_HEIGHT <= V_RES))
 		state->curr_position_y -= state->delta_y;
+	else if(state->curr_position_y - state->delta_y < 0)
+		state->curr_position_y = 0;
+	else if((state->curr_position_y - state->delta_y + MOUSE_HEIGHT) > V_RES)
+		state->curr_position_y = V_RES - MOUSE_HEIGHT;
 
 }

@@ -24,6 +24,7 @@ typedef struct mouse_state
 	short x_sign;
 	short y_sign;
 	short r_button_state;
+	short l_button_state;
 	int curr_position_x;
 	int curr_position_y;
 

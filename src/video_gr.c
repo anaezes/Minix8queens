@@ -96,9 +96,10 @@ int vg_exit() {
 }
 
 
-
 int vg_start()
 {
+	vg_draw_rectangle(0, 0, H_RES, V_RES, 64);
+
 	//DRAW RECTANGLE LOGO
 	vg_draw_rectangle(0, 100, 1024, 200, 56);
 
@@ -122,7 +123,7 @@ int vg_start()
 
 int vg_game()
 {
-	vg_draw_rectangle(0, 0, 1024, 700, 0);
+	vg_draw_rectangle(0, 0, H_RES, V_RES, 0);
 
 	//DRAW SMALL LOGO
 	int width;
@@ -154,7 +155,7 @@ int vg_game()
 	}
 
 	vg_draw_rectangle(30, 716, 964, 30, 56);
-	vg_draw_rectangle(50, 716, 944, 30, 6);
+//	vg_draw_rectangle(50, 716, 944, 30, 6);
 
 	return 0;
 }
@@ -188,11 +189,6 @@ void vg_draw_mouse_pointer(int x, int y)
 
 }
 
-void clean_position(unsigned short xi, unsigned short yi, int width, int height )
-{
-
-}
-
 void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 {
 	if(color != 2 )
@@ -207,23 +203,9 @@ void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 int get_pixel(unsigned short x, unsigned short y)
 {
 	//gives a color of a pixel
-	return *(video_mem + ((unsigned short)x + (unsigned short)y * h_res));
+	return (video_mem + ((unsigned short)x + (unsigned short)y * h_res));
 }
 
-void vg_draw_pixmap_queen(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
-{
-	int i = 0;
-	while(i < width)
-	{
-		int j = 0;
-		while(j < height)
-		{
-			set_pixel(xi + i, yi + j, *(pixmap + (i + j * width)));
-			j++;
-		}
-		i++;
-	}
-}
 
 void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
 {
@@ -240,20 +222,36 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 		i++;
 	}
 }
-//
-//void vg_move_pixmap(Sprite* sprite)
+
+
+//// returns the state of a rectangle of pixels
+//int* vg_get_area_state(unsigned short xi, unsigned short yi, int width, int height)
 //{
-//	 unsigned short size;
-//	if(sprite->width > sprite->height)
-//		size = sprite->width;
-//	else
-//		size = sprite->height;
+//	int* area_state = malloc(sizeof(int)*width*height);
 //
-//	//clean last position
-//	vg_draw_square(sprite->x, sprite->y, size, 0);
+//	int i, j;
+//	for(i = 0; i < height; i++)
+//		for(j = 0; j < width; j++)
+//			area_state[j + i*width] = get_pixel(xi+j, yi+i);
 //
-//	sprite->x += sprite->xspeed;
-//	sprite->y += sprite->yspeed;
-//	vg_draw_pixmap(sprite->x, sprite->y, sprite->map, sprite->width, sprite->height);
-//
+//	return area_state;
 //}
+//
+//
+//// resets an area of pixels to the given state
+//void vg_reset_area_state(int* area_state, unsigned short xi, unsigned short yi, int width, int height)
+//{
+//	int i, j;
+//	for(i = 0; i < height; i++)
+//		for(j = 0; j < width; j++)
+//		{
+//			printf("xi+j: %d\n", (xi+j));
+//			printf("yi+i: %d\n", (yi+i));
+//			printf("color: %d\n", area_state[j + i*width]);
+//			printf("pos: %d\n", (j + i*width));
+//
+//			set_pixel(xi+j, yi+i, area_state[j + i*width]);
+//		}
+//}
+
+

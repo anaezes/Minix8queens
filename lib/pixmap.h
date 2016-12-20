@@ -647,6 +647,8 @@ static char * logo[] = {
 
 
 
+
+
 /* XPM */
 static char *menu[] = {
 		/* columns rows colors chars-per-pixel */

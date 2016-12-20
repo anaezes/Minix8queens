@@ -36,11 +36,12 @@
 
 
 //DEFINE COLORS
-#define COLOR_RED			16711680
-#define COLOR_GREEN			885091
-#define COLOR_BLUE			2445443
-#define COLOR_WHITE			16777215
-#define COLOR_ORANGE 		15795988
+#define COLOR_RED			4
+#define COLOR_GOLD			6
+#define COLOR_WHITE			63
+#define	COLOR_LIGHT_GREY	7
+#define COLOR_DARK_GREY		56
+#define COLOR_BLACK			0
 
 
 

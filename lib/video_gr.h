@@ -32,19 +32,15 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
-
 int vg_start();
 
 int vg_game();
 
-
- 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color);
 
 void vg_draw_mouse_pointer(int x, int y);
 
 void set_pixel(unsigned short x, unsigned short y, unsigned long color);
-int colision_x(unsigned int x, unsigned int y);
 
 void vg_draw_line(unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, unsigned long color);
 
@@ -52,6 +48,12 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 
 void vg_draw_pixmap_queen(unsigned short xi, unsigned short yi, char* pixmap, int width, int height);
 
-void vg_move_pixmap(Sprite* sprite);
+void vg_reset_area_state(int* area_state, unsigned short xi, unsigned short yi, int width, int height);
+
+int* vg_get_area_state(unsigned short xi, unsigned short yi, int width, int height);
+
+//void vg_clear_screen(char* video_copy);
+//
+//char* vg_get_copy_screen(char* video_mem1);
 
 #endif /* __VIDEO_GR_H */

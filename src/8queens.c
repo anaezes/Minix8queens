@@ -9,6 +9,7 @@
 #include "../lib/pixmap.h"
 #include "../lib/sprite.h"
 #include "../lib/Mouse.h"
+#include "../lib/algorithm.h"
 
 unsigned long packet[MOUSE_PACKET_SIZE];
 unsigned long config[MOUSE_CONFIG_SIZE];
@@ -133,7 +134,7 @@ int game_loop() {
 								if (state.l_button_state == 1)
 								{
 									if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
-											&& (state.curr_position_y >= 541 && state.curr_position_y <= 593))
+											&& (state.curr_position_y >= 537 && state.curr_position_y <= 590))
 									{
 										evt.type = MOVE;
 										game_state.curr_state = PLAY;
@@ -172,7 +173,8 @@ int game_loop() {
 						start_time = timer_get_ellapsed_time();
 					}
 					if(game_state.curr_state == PLAY)
-						move_handler(scancode, &x, &y, &color);
+						sys_inb(KBC_DATA_BUFFER, &scancode);
+						move_handler(scancode, &x, &y, &color, game_state);
 
 				}
 
@@ -189,6 +191,7 @@ int game_loop() {
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
+
 
 		if(game_state.curr_state == PLAY)
 		{
@@ -223,7 +226,7 @@ int game_loop() {
 	return 0;
 }
 
-int move_handler(unsigned long code, int* x, int* y, unsigned int* color) {
+int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st game_state) {
 
 	int width;
 	int height;
@@ -262,27 +265,42 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color) {
 		break;
 	case 0x1C: //ENTER
 		//check algorithm
-		*x = 251;
-		*y = 35;
-		*color = 63;
+		putQueen(game_state.board, *x, *y);
+		printBoard(game_state.board);
+		if(is_valid(game_state.board, *x, *y) == 1)
+		{
 
-		pixmap = read_xpm(queen, &width, &height);
-		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			printf("posição errada!\n");
+			removeQueen(game_state.board, *x, *y);
+			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			move_handler(code, x, y, color, game_state);
+		}
+		else
+		{
 
-		return 1;
+			//inicial position of queen
+			*x = 251;
+			*y = 35;
+			*color = COLOR_WHITE;
+
+			pixmap = read_xpm(queen, &width, &height);
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+		}
+			return 0;
+
 		break;
 	default:
 		return 0;
 	}
 
-	if(*color == 56)
-		*color = 63;
+	if(*color == COLOR_DARK_GREY)
+		*color = COLOR_WHITE;
 	else
-		*color = 56;
+		*color = COLOR_DARK_GREY;
 
 	return 0;
 }
-
 
 
 
