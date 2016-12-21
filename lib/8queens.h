@@ -23,6 +23,8 @@ typedef struct game_st
 	int n_queens;
 	char* graphics_state;
 
+	unsigned long packet[MOUSE_PACKET_SIZE];
+
 } game_st;
 
 

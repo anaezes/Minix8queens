@@ -134,6 +134,7 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 	if((packet[0] & BIT(6)) != 0)
 	{
 		state->x_overflow = 1;
+		printf("X Overflow\n");
 		if((packet[0] & BIT(4)) != 0)
 			state->delta_x = (-1<<8);
 		else
@@ -151,6 +152,7 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 	//Compute delta_y
 	if((packet[0] & BIT(7)) != 0)
 	{
+		printf("Y Overflow\n");
 		state->y_overflow = 1;
 		if((packet[0] & BIT(5)) != 0)
 			state->delta_y = (-1<<8);
@@ -184,8 +186,8 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 
 	transform_mouse_values(state, packet);
 
-	printf("x %d %d\n", state->curr_position_x, state->delta_x);
-	printf("y %d %d\n", state->curr_position_y, state->delta_y);
+	printf("x %d dx %d\n", state->curr_position_x, state->delta_x);
+	printf("y %d dy %d\n", state->curr_position_y, state->delta_y);
 	printf("yf: %d\n", (state->curr_position_y - state->delta_y + MOUSE_HEIGHT ));
 	printf("xf: %d\n\n", (state->curr_position_x + state->delta_x + MOUSE_WIDTH));
 

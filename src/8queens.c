@@ -71,13 +71,9 @@ int game_loop() {
 	game_st game_state = init_game();
 	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 
-	int count = 0;
 	int finished = 0;
 	int second_time = 0;
 	int start_time = timer_get_ellapsed_time();
-
-	int packet_async = 1;
-	short curr_length = 0;
 
 	mouse_state state = init_mouse_state();
 
@@ -115,35 +111,17 @@ int game_loop() {
 
 					sys_inb(KBC_DATA_BUFFER, &packet[pos]);
 
-					if ((count == 0 && ((packet[pos] & BIT(3))&& (packet[pos] != KBC_ACK))) != 0) {
-						packet_async = 0;
-					}
 
-					if (packet_async == 0) {
+					if(((packet[0] & BIT(3)) && (packet[0] != KBC_ACK)) != 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
+
 						if (pos == 2) {
-
-							event_t evt;
-
 							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 							update_mouse_state(&state, packet);
 							graphics_invalidated = 1;
 
-							if(game_state.curr_state == INIT)
-							{
-								if (state.l_button_state == 1)
-								{
-									if ((state.curr_position_x >= 296 && state.curr_position_x <= 666)
-											&& (state.curr_position_y >= 537 && state.curr_position_y <= 590))
-									{
-										evt.type = MOVE;
-										game_state.curr_state = PLAY;
-										start_time = timer_get_ellapsed_time();
-									}
-								}
-							}
-
-							count++;
+							if(mouse_interrupt_handler(&game_state, &state) == 1)
+								start_time = timer_get_ellapsed_time();
 						}
 					}
 				}
@@ -151,10 +129,10 @@ int game_loop() {
 				if (msg.NOTIFY_ARG & timer_irq)
 				{
 					timer_int_handler();
-//					if(game_state.curr_state == INIT)
-//						vg_start();
-//					else if(game_state.curr_state == PLAY)
-//						vg_game();
+					//					if(game_state.curr_state == INIT)
+					//						vg_start();
+					//					else if(game_state.curr_state == PLAY)
+					//						vg_game();
 				}
 
 				if (msg.NOTIFY_ARG & irq_set) {
@@ -166,6 +144,7 @@ int game_loop() {
 						game_state.curr_state = END;
 					if (game_state.curr_state == INIT && scancode == 0x1C)
 					{
+						printf("PIM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						game_state.curr_state = PLAY;
 						vg_game();
 						vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
@@ -174,7 +153,7 @@ int game_loop() {
 					}
 					if(game_state.curr_state == PLAY)
 						sys_inb(KBC_DATA_BUFFER, &scancode);
-						move_handler(scancode, &x, &y, &color, game_state);
+					move_handler(scancode, &x, &y, &color, game_state);
 
 				}
 
@@ -225,6 +204,25 @@ int game_loop() {
 
 	return 0;
 }
+
+int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
+{
+	if(game_state->curr_state == INIT)
+	{
+		if (mouse->l_button_state == 1)
+		{
+			if ((mouse->curr_position_x >= 296 && mouse->curr_position_x <= 666) &&
+					(mouse->curr_position_y >= 537 && mouse->curr_position_y <= 590))
+			{
+				game_state->curr_state = PLAY;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+
 
 int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st game_state) {
 
@@ -287,7 +285,7 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 			pixmap = read_xpm(queen, &width, &height);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		}
-			return 0;
+		return 0;
 
 		break;
 	default:

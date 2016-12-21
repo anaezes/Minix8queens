@@ -36,7 +36,6 @@ int mouse_subscribe_int(void);
 int mouse_unsubscribe_int(void);
 void mouse_print_packet(unsigned long*);
 void mouse_print_config(unsigned long*);
-short absolute_length(short);
 void xy_abs_values(unsigned long*);
 void update_mouse_state(mouse_state*, unsigned long*);
 
