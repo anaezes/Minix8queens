@@ -89,6 +89,7 @@ int game_loop() {
 	kbc_mouse_init();
 
 	vg_start();
+	show_selected_menu(300, 400);
 
 	game_st game_state = init_game();
 	queens_st queens_state = init_queens();
@@ -120,14 +121,14 @@ int game_loop() {
 					if(((packet[0] & BIT(3)) && (packet[0] != KBC_ACK)) != 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 
-//						if (pos == 2) {
-//							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-//							update_mouse_state(&state, packet);
-//							graphics_invalidated = 1;
-//
-//							if(mouse_interrupt_handler(&game_state, &state) == 1)
-//								start_time = timer_get_ellapsed_time();
-//						}
+						//						if (pos == 2) {
+						//							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
+						//							update_mouse_state(&state, packet);
+						//							graphics_invalidated = 1;
+						//
+						//							if(mouse_interrupt_handler(&game_state, &state) == 1)
+						//								start_time = timer_get_ellapsed_time();
+						//						}
 					}
 				}
 
@@ -147,45 +148,20 @@ int game_loop() {
 					{
 						game_state.curr_state = INIT;
 						vg_start();
+						show_selected_menu(300, 400);
 					}
-
-					else if (game_state.curr_state == INIT && scancode == 0x1C)
+					// start or restart game
+					else if ((game_state.curr_state == INIT && scancode == KEY_ENTER) ||
+							(game_state.curr_state == PLAY && scancode == KEY_R))
 					{
-						game_state = init_game();
-						game_state.curr_state = PLAY;
-						queens_state = init_queens();
-						start_time = timer_get_ellapsed_time();
-						state = init_mouse_state();
-
-						// draw board
-						vg_game();
-
-						// draw time bar
-						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
-
-						// draw queen
-						// draw queen
-						vg_draw_pixmap(queens_state.x+3, queens_state.y+5, queens_state.pixmap, queens_state.width, queens_state.height);
-
-					}
-					else if(game_state.curr_state == PLAY && scancode == 0x93)
-					{
-						//init all values
 						game_state = init_game();
 						queens_state = init_queens();
 						start_time = timer_get_ellapsed_time();
 						state = init_mouse_state();
 
 						game_state.curr_state = PLAY;
+						start_game(&game_state, &queens_state);
 
-						// draw board
-						vg_game();
-
-						// draw time bar
-						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
-
-						// draw queen
-						vg_draw_pixmap(queens_state.x+3, queens_state.y+5, queens_state.pixmap, queens_state.width, queens_state.height);
 					}
 					else if(game_state.curr_state == PLAY)
 						move_handler(scancode, &queens_state, &game_state);
@@ -264,6 +240,19 @@ int game_loop() {
 	return 0;
 }
 
+void start_game(game_st* game_state, queens_st* queens_state)
+{
+	// draw board
+	vg_game();
+
+	// draw time bar
+	vg_draw_rectangle(game_state->xi, game_state->yi, game_state->widthR, game_state->heightR, game_state->colorR);
+
+	// draw queen
+	vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
+
+}
+
 int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
 {
 	if(game_state->curr_state == INIT)
@@ -296,8 +285,7 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 	int tmp_y = queens_state->y;
 
 	switch (code) {
-	case 0xCD: //right
-		printf("right\n");
+	case KEY_RIGHT:
 		tmp_x += 81;
 		if(tmp_x > 850)
 			tmp_x = X_INIT_QUEEN;
@@ -315,9 +303,8 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 			switchColor(queens_state);
 		}
 		break;
-	case 0xCB://left
-		printf("left\n");
-		if(tmp_x-81 < 251)
+	case KEY_LEFT:
+		if(tmp_x-81 < X_INIT_QUEEN)
 			break;
 		tmp_x -= 81;
 
@@ -335,8 +322,7 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 			switchColor(queens_state);
 		}
 		break;
-	case 0xC8: //up
-		printf("up\n");
+	case KEY_UP:
 		if(tmp_y-81 < Y_INIT_QUEEN)
 			break;
 		tmp_y -= 81;
@@ -355,7 +341,7 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 			switchColor(queens_state);
 		}
 		break;
-	case 0xD0: //down
+	case KEY_DOWN: //down
 		printf("down\n");
 		tmp_y += 81;
 		if(tmp_y > 650)
@@ -376,7 +362,7 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 		}
 
 		break;
-	case 0x1C: //ENTER
+	case KEY_ENTER: //ENTER
 		//check algorithm
 
 		x_coord = (queens_state->x - X_INIT_QUEEN)/81;

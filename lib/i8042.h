@@ -8,6 +8,13 @@
 
 // Our driver should stop when reading this
 #define DRIVER_END_SCODE	0x81
+#define KEY_ENTER			0x1C
+#define KEY_R				0x93
+#define KEY_UP				0xC8
+#define KEY_DOWN			0xD0
+#define KEY_LEFT			0xCB
+#define KEY_RIGHT			0xCD
+
 
 #define KB_IRQ 				1
 
