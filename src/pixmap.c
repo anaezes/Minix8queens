@@ -27,6 +27,8 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return mouse;
 	else if(xpm_code == 7)
 		return gameOver;
+	else if(xpm_code == 8)
+		return win;
 	else
 		return NULL;
 }
