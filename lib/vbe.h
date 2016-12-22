@@ -43,6 +43,12 @@
 #define COLOR_DARK_GREY		56
 #define COLOR_BLACK			0
 
+#define BOARD_SIZE 			8
+#define N_QUEENS			8
+#define SQUARE_SIZE			82
+
+#define X_INIT_QUEEN		251
+#define Y_INIT_QUEEN		35
 
 
 typedef struct {

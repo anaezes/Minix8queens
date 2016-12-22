@@ -9,7 +9,6 @@
 
 typedef enum {INIT, PLAY, WIN, LOSE, END_PLAY, END} state_t;
 typedef enum {RDOWN, RUP, MOVE} ev_type_t;
-#define BOARD_SIZE 8
 
 typedef struct event_t
 {
@@ -27,11 +26,26 @@ typedef struct game_st
 
 } game_st;
 
+typedef struct queens_st
+{
+	int x;
+	int y;
+	unsigned int color;
+	int width;
+	int height;
+	char** queen;
+	char* pixmap;
+
+} queens_st;
+
+
 game_st init_game();
+
+queens_st init_queens();
 
 int game_loop();
 
-void switchColor(unsigned int *color);
+void switchColor(queens_st* queens_state);
 
 void showGameOver();
 

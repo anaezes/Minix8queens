@@ -38,6 +38,21 @@ game_st init_game()
 }
 
 
+queens_st init_queens()
+{
+	queens_st state;
+
+	state.x = X_INIT_QUEEN;
+	state.y = Y_INIT_QUEEN;
+	state.color = COLOR_WHITE;
+	state.width;
+	state.height;
+	state.queen = pixmap_get_image(1);
+	state.pixmap = read_xpm(state.queen, &state.width, &state.height);
+
+	return state;
+}
+
 int game_loop() {
 
 	char* vram_address = vg_init(GRAPHIC_MODE);
@@ -76,20 +91,14 @@ int game_loop() {
 	vg_start();
 
 	game_st game_state = init_game();
+	queens_st queens_state = init_queens();
+
 	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 	int start_time = timer_get_ellapsed_time();
 	mouse_state state = init_mouse_state();
 
 	// if graphics need to be repainted
 	int graphics_invalidated = 0;
-
-	int x = 251;
-	int y = 35;
-	unsigned int color = 63;
-	int width;
-	int height;
-	char** queen = pixmap_get_image(1);
-	char* pixmap = read_xpm(queen, &width, &height);
 
 	unsigned long scancode = 0x00;
 	int ipc_status, r;
@@ -111,16 +120,17 @@ int game_loop() {
 					if(((packet[0] & BIT(3)) && (packet[0] != KBC_ACK)) != 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 
-						if (pos == 2) {
-							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-							update_mouse_state(&state, packet);
-							graphics_invalidated = 1;
-
-							if(mouse_interrupt_handler(&game_state, &state) == 1)
-								start_time = timer_get_ellapsed_time();
-						}
+//						if (pos == 2) {
+//							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
+//							update_mouse_state(&state, packet);
+//							graphics_invalidated = 1;
+//
+//							if(mouse_interrupt_handler(&game_state, &state) == 1)
+//								start_time = timer_get_ellapsed_time();
+//						}
 					}
 				}
+
 
 				if (msg.NOTIFY_ARG & timer_irq)
 					timer_int_handler();
@@ -141,7 +151,11 @@ int game_loop() {
 
 					else if (game_state.curr_state == INIT && scancode == 0x1C)
 					{
+						game_state = init_game();
 						game_state.curr_state = PLAY;
+						queens_state = init_queens();
+						start_time = timer_get_ellapsed_time();
+						state = init_mouse_state();
 
 						// draw board
 						vg_game();
@@ -150,18 +164,17 @@ int game_loop() {
 						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
 
 						// draw queen
-						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
-						start_time = timer_get_ellapsed_time();
+						// draw queen
+						vg_draw_pixmap(queens_state.x+3, queens_state.y+5, queens_state.pixmap, queens_state.width, queens_state.height);
+
 					}
 					else if(game_state.curr_state == PLAY && scancode == 0x93)
 					{
 						//init all values
 						game_state = init_game();
+						queens_state = init_queens();
 						start_time = timer_get_ellapsed_time();
 						state = init_mouse_state();
-						x = 251;
-						y = 35;
-						color = 63;
 
 						game_state.curr_state = PLAY;
 
@@ -172,16 +185,17 @@ int game_loop() {
 						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
 
 						// draw queen
-						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
+						vg_draw_pixmap(queens_state.x+3, queens_state.y+5, queens_state.pixmap, queens_state.width, queens_state.height);
 					}
 					else if(game_state.curr_state == PLAY)
-						move_handler(scancode, &x, &y, &color, &game_state);
+						move_handler(scancode, &queens_state, &game_state);
 
-				}
 
-				break;
+
+					break;
 			default:
 				break;
+				}
 			}
 		}
 
@@ -200,8 +214,8 @@ int game_loop() {
 				// update time bar
 				if(game_state.widthR > 0)
 				{
-					game_state.xi += 30;
-					game_state.widthR -= 30;
+					game_state.xi += 5;
+					game_state.widthR -= 5;
 
 					vg_draw_rectangle(30, 716, 964, 30, 56);
 					if(game_state.widthR < 0)
@@ -268,37 +282,37 @@ int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
 }
 
 
-int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st* game_state) {
+int move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
 
-	int width;
-	int height;
-	char** queen = pixmap_get_image(1);
-	char* pixmap = read_xpm(queen, &width, &height);
+	//	int width;
+	//	int height;
+	//	char** queen = pixmap_get_image(1);
+	//	char* pixmap = read_xpm(queen, &width, &height);
 
 	int x_coord;
 	int y_coord;
 
-	int tmp_x = *x;
-	int tmp_y = *y;
+	int tmp_x = queens_state->x;
+	int tmp_y = queens_state->y;
 
 	switch (code) {
 	case 0xCD: //right
 		printf("right\n");
 		tmp_x += 81;
 		if(tmp_x > 850)
-			tmp_x = 251;
+			tmp_x = X_INIT_QUEEN;
 
-		x_coord = (tmp_x - 251)/81;
-		y_coord = (tmp_y - 35)/81;
+		x_coord = (tmp_x - X_INIT_QUEEN)/81;
+		y_coord = (tmp_y - Y_INIT_QUEEN)/81;
 		if(game_state->board[y_coord][x_coord] != 1)
 		{
-			vg_draw_rectangle(*x, *y, 82, 82, *color);
-			*x += 81;
-			if(*x > 850)
-				*x = 251;
+			vg_draw_rectangle(queens_state->x, queens_state->y, SQUARE_SIZE, SQUARE_SIZE, queens_state->color);
+			queens_state->x += 81;
+			if(queens_state->x > 850)
+				queens_state->x = X_INIT_QUEEN;
 
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
-			switchColor(color);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
+			switchColor(queens_state);
 		}
 		break;
 	case 0xCB://left
@@ -307,96 +321,95 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 			break;
 		tmp_x -= 81;
 
-		x_coord = (tmp_x - 251)/81;
-		y_coord = (tmp_y - 35)/81;
+		x_coord = (tmp_x - X_INIT_QUEEN)/81;
+		y_coord = (tmp_y - Y_INIT_QUEEN)/81;
 		if(game_state->board[y_coord][x_coord] != 1)
 		{
-			vg_draw_rectangle(*x, *y, 82, 82, *color);
+			vg_draw_rectangle(queens_state->x, queens_state->y, SQUARE_SIZE, SQUARE_SIZE, queens_state->color);
 
-			if(*x-81 < 251)
+			if(queens_state->x-81 < 251)
 				break;
-			*x -= 81;
+			queens_state->x -= 81;
 
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
-			switchColor(color);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
+			switchColor(queens_state);
 		}
 		break;
 	case 0xC8: //up
 		printf("up\n");
-		if(tmp_y-81 < 35)
+		if(tmp_y-81 < Y_INIT_QUEEN)
 			break;
 		tmp_y -= 81;
 
-		x_coord = (tmp_x - 251)/81;
-		y_coord = (tmp_y - 35)/81;
+		x_coord = (tmp_x - X_INIT_QUEEN)/81;
+		y_coord = (tmp_y - Y_INIT_QUEEN)/81;
 		if(game_state->board[y_coord][x_coord] != 1)
 		{
-			vg_draw_rectangle(*x, *y, 82, 82, *color);
+			vg_draw_rectangle(queens_state->x, queens_state->y, SQUARE_SIZE, SQUARE_SIZE, queens_state->color);
 
-			if(*y-81 < 35)
+			if(queens_state->y-81 < Y_INIT_QUEEN)
 				break;
-			*y -= 81;
+			queens_state->y -= 81;
 
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
-			switchColor(color);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
+			switchColor(queens_state);
 		}
 		break;
 	case 0xD0: //down
 		printf("down\n");
 		tmp_y += 81;
 		if(tmp_y > 650)
-			tmp_y = 35;
+			tmp_y = Y_INIT_QUEEN;
 
-		x_coord = (tmp_x - 251)/81;
-		y_coord = (tmp_y - 35)/81;
+		x_coord = (tmp_x - X_INIT_QUEEN)/81;
+		y_coord = (tmp_y - Y_INIT_QUEEN)/81;
 		if(game_state->board[y_coord][x_coord] != 1)
 		{
-			vg_draw_rectangle(*x, *y, 82, 82, *color);
+			vg_draw_rectangle(queens_state->x, queens_state->y, SQUARE_SIZE, SQUARE_SIZE, queens_state->color);
 
-			*y += 81;
-			if(*y > 650)
-				*y = 35;
+			queens_state->y += 81;
+			if(queens_state->y > 650)
+				queens_state->y = Y_INIT_QUEEN;
 
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
-			switchColor(color);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
+			switchColor(queens_state);
 		}
 
 		break;
 	case 0x1C: //ENTER
 		//check algorithm
 
-		x_coord = (*x - 251)/81;
-		y_coord = (*y - 35)/81;
+		x_coord = (queens_state->x - X_INIT_QUEEN)/81;
+		y_coord = (queens_state->y - Y_INIT_QUEEN)/81;
 
 		game_state->board[y_coord][x_coord] = 1;
 		printBoard(game_state->board);
 		if(!is_valid(game_state->board, x_coord, y_coord))
 		{
 			game_state->board[y_coord][x_coord] = 0;
-			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			vg_draw_rectangle(queens_state->x, queens_state->y, SQUARE_SIZE, SQUARE_SIZE, COLOR_RED);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
 		}
 		else
 		{
 			//inicial position of queen
 			game_state->n_queens++;
 
-			if(game_state->n_queens < 8)
+			if(game_state->n_queens < N_QUEENS)
 			{
 				if(game_state->board[0][0] == 1)
 				{
-					*x = 251+81;
-					*color = COLOR_DARK_GREY;
+					queens_state->x = X_INIT_QUEEN+81;
+					queens_state->color = COLOR_DARK_GREY;
 				}
 				else
 				{
-					*x = 251;
-					*color = COLOR_WHITE;
+					queens_state->x = X_INIT_QUEEN;
+					queens_state->color = COLOR_WHITE;
 				}
 
-				*y = 35;
-				pixmap = read_xpm(queen, &width, &height);
-				vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+				queens_state->y = Y_INIT_QUEEN;
+				vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->pixmap, queens_state->width, queens_state->height);
 			}
 			else
 				game_state->curr_state = WIN;
@@ -410,12 +423,12 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 	return 0;
 }
 
-void switchColor(unsigned int *color)
+void switchColor(queens_st* queens_state)
 {
-	if(*color == COLOR_DARK_GREY)
-		*color = COLOR_WHITE;
+	if(queens_state->color == COLOR_DARK_GREY)
+		queens_state->color = COLOR_WHITE;
 	else
-		*color = COLOR_DARK_GREY;
+		queens_state->color = COLOR_DARK_GREY;
 }
 
 void showGameOver()
@@ -483,8 +496,8 @@ void showSolution()
 		{
 			if(board[i][j] == 1)
 			{
-				x = (j*81)+251;
-				y = (i*81)+35;
+				x = (j*81)+X_INIT_QUEEN;
+				y = (i*81)+Y_INIT_QUEEN;
 
 				vg_draw_pixmap(x+3, y+5, pixmap, width, height);
 			}
