@@ -8,16 +8,13 @@
 #include "Driver.h"
 
 typedef enum {INIT, PLAY, WIN, LOSE, END_PLAY, END} state_t;
-typedef enum {RDOWN, RUP, MOVE} ev_type_t;
+typedef enum {INSTRUCTIONS, INIT_PLAY, MENU_EXIT} menu_option_t;
 
-typedef struct event_t
-{
-	ev_type_t type;
-} event_t;
 
 typedef struct game_st
 {
 	state_t curr_state;
+	menu_option_t curr_option;
 	int board[BOARD_SIZE][BOARD_SIZE];
 	int n_queens;
 	char* graphics_state;
@@ -44,6 +41,10 @@ game_st init_game();
 queens_st init_queens();
 
 int game_loop();
+
+void start_game(game_st* game_state, queens_st* queens_state);
+
+void highlight_menu_option(unsigned long scancode, game_st* game_state);
 
 void switchColor(queens_st* queens_state);
 

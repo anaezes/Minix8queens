@@ -50,6 +50,9 @@
 #define X_INIT_QUEEN		251
 #define Y_INIT_QUEEN		35
 
+//Inicial menu pixels coordinates
+#define X_INIT_MENU			300
+#define Y_INIT_MENU			400
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */

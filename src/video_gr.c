@@ -154,12 +154,16 @@ int vg_game()
 		yi += 162;
 	}
 
-//	vg_draw_rectangle(30, 716, 964, 30, 56);
-//	vg_draw_rectangle(50, 716, 944, 30, 6);
-
 	return 0;
 }
-
+void show_selected_menu(int x, int y)
+{
+	int width;
+	int height;
+	char** selected = pixmap_get_image(9);
+	char* pixmap = read_xpm(selected, &width, &height);
+	vg_draw_pixmap(x, y, pixmap, width, height);
+}
 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)
 {
