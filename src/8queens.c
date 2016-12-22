@@ -21,6 +21,8 @@ game_st init_game()
 	state.n_queens = 0;
 	state.curr_state = INIT;
 	state.graphics_state = NULL;
+	state.x_coord = 0;
+	state.y_coord = 0;
 
 	int i, j;
 	for(i = 0; i < BOARD_SIZE; i++)
@@ -142,18 +144,24 @@ int game_loop() {
 					//set state machine in the last state
 					if (scancode == DRIVER_END_SCODE)
 						game_state.curr_state = END;
+
 					if (game_state.curr_state == INIT && scancode == 0x1C)
 					{
-						printf("PIM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						game_state.curr_state = PLAY;
+
+						// draw board
 						vg_game();
+
+						// draw time bar
 						vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
+
+						// draw queen
 						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
 						start_time = timer_get_ellapsed_time();
 					}
 					if(game_state.curr_state == PLAY)
-						sys_inb(KBC_DATA_BUFFER, &scancode);
-					move_handler(scancode, &x, &y, &color, game_state);
+						move_handler(scancode, &x, &y, &color, &game_state);
+
 
 				}
 
@@ -163,19 +171,20 @@ int game_loop() {
 			}
 		}
 
-		if(graphics_invalidated == 1)
-		{
-			//free(game_state.graphics_state);
-			//game_state.graphics_state = vg_get_area_state(state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
-			graphics_invalidated = 0;
-		}
+		//		if(graphics_invalidated == 1)
+		//		{
+		//			//free(game_state.graphics_state);
+		//			//game_state.graphics_state = vg_get_area_state(state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
+		//			//vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+		//			graphics_invalidated = 0;
+		//		}
 
 
 		if(game_state.curr_state == PLAY)
 		{
 			if((timer_get_ellapsed_time() - start_time) == 1)
 			{
+				// update time bar
 				if(widthR > 0)
 				{
 					xi += 2;
@@ -222,18 +231,21 @@ int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
 	return 0;
 }
 
-
-
-int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st game_state) {
+static a = 0;
+int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st* game_state) {
 
 	int width;
 	int height;
 	char** queen = pixmap_get_image(1);
-
 	char* pixmap = read_xpm(queen, &width, &height);
+
+
+	int x_coord;
+	int y_coord;
 
 	switch (code) {
 	case 0xCD: //right
+		printf("right\n");
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*x += 81;
 		if(*x > 850)
@@ -241,6 +253,7 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xCB://left
+		printf("left\n");
 		if(*x-81 < 251)
 			break;
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
@@ -248,6 +261,7 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xC8: //up
+		printf("up\n");
 		if(*y-81 < 35)
 			break;
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
@@ -255,28 +269,38 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0xD0: //down
+		printf("down\n");
 		vg_draw_rectangle(*x, *y, 82, 82, *color);
 		*y += 81;
 		if(*y > 650)
 			*y = 35;
+
 		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		break;
 	case 0x1C: //ENTER
 		//check algorithm
-		putQueen(game_state.board, *x, *y);
-		printBoard(game_state.board);
-		if(is_valid(game_state.board, *x, *y) == 1)
+
+		x_coord = (*x - 251)/81;
+		y_coord = (*y - 35)/81;
+
+		printf("x: %d\n", *x);
+		printf("y: %d\n", *y);
+		printf("x_coord: %d\n", x_coord);
+		printf("y_coord: %d\n\n", y_coord);
+		printf("(%d - 251) / 81", *x);
+
+		game_state->board[y_coord][x_coord] = 1;
+		//printBoard(game_state->board);
+		if(is_valid(game_state->board, y_coord, x_coord) == 1)
 		{
 
 			printf("posição errada!\n");
-			removeQueen(game_state.board, *x, *y);
+			game_state->board[y_coord][x_coord] = 0;
 			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
-			move_handler(code, x, y, color, game_state);
 		}
 		else
 		{
-
 			//inicial position of queen
 			*x = 251;
 			*y = 35;

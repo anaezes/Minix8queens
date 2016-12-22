@@ -22,8 +22,8 @@ typedef struct game_st
 	int board[BOARD_SIZE][BOARD_SIZE];
 	int n_queens;
 	char* graphics_state;
-
-	unsigned long packet[MOUSE_PACKET_SIZE];
+	int x_coord;
+	int y_coord;
 
 } game_st;
 
