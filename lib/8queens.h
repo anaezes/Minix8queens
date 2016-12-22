@@ -7,7 +7,7 @@
 #include "Keyboard.h"
 #include "Driver.h"
 
-typedef enum {INIT, PLAY, SOLUTION, END} state_t;
+typedef enum {INIT, PLAY, WIN, LOSE, END_PLAY, END} state_t;
 typedef enum {RDOWN, RUP, MOVE} ev_type_t;
 #define BOARD_SIZE 8
 
@@ -22,23 +22,24 @@ typedef struct game_st
 	int board[BOARD_SIZE][BOARD_SIZE];
 	int n_queens;
 	char* graphics_state;
-	int x_coord;
-	int y_coord;
+	int xi, yi, widthR, heightR;
+	unsigned int colorR;
 
 } game_st;
-
 
 game_st init_game();
 
 int game_loop();
 
-
-
 void switchColor(unsigned int *color);
 
 void showGameOver();
 
+void showYouWin();
+
 void showSolution();
+
+void showOptions();
 
 /** @} end of proj */
 

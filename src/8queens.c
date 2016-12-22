@@ -18,16 +18,21 @@ unsigned int pos = 0;
 game_st init_game()
 {
 	game_st state;
-	state.n_queens = 0;
 	state.curr_state = INIT;
 	state.graphics_state = NULL;
-	state.x_coord = 0;
-	state.y_coord = 0;
+	state.n_queens = 0;
 
 	int i, j;
 	for(i = 0; i < BOARD_SIZE; i++)
 		for(j = 0; j < BOARD_SIZE; j++)
 			state.board[i][j] = 0;
+
+	//init time bar
+	state.xi = 30;
+	state.yi = 716;
+	state.widthR = 964;
+	state.heightR = 30;
+	state.colorR = 6;
 
 	return state;
 }
@@ -72,12 +77,7 @@ int game_loop() {
 
 	game_st game_state = init_game();
 	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-
-	int finished = 0;
-	int second_time = 0;
 	int start_time = timer_get_ellapsed_time();
-	int endOfTime = 0;
-
 	mouse_state state = init_mouse_state();
 
 	// if graphics need to be repainted
@@ -90,13 +90,6 @@ int game_loop() {
 	int height;
 	char** queen = pixmap_get_image(1);
 	char* pixmap = read_xpm(queen, &width, &height);
-
-	//rectangle time
-	int xi = 30;
-	int yi = 716;
-	int  widthR = 964;
-	int heightR = 30;
-	unsigned colorR = 6;
 
 	unsigned long scancode = 0x00;
 	int ipc_status, r;
@@ -130,22 +123,23 @@ int game_loop() {
 				}
 
 				if (msg.NOTIFY_ARG & timer_irq)
-				{
 					timer_int_handler();
-					//					if(game_state.curr_state == INIT)
-					//						vg_start();
-					//					else if(game_state.curr_state == PLAY)
-					//						vg_game();
-				}
+
 
 				if (msg.NOTIFY_ARG & irq_set) {
 					int n_bytes = kb_int_handler(&scancode);
-					//kb_print_scancode(scancode, n_bytes);
+					kb_print_scancode(scancode, n_bytes);
 					//set state machine in the last state
-					if (scancode == DRIVER_END_SCODE)
+					if (game_state.curr_state == INIT && scancode == DRIVER_END_SCODE)
 						game_state.curr_state = END;
 
-					if (game_state.curr_state == INIT && scancode == 0x1C)
+					else if(game_state.curr_state != INIT && scancode == DRIVER_END_SCODE)
+					{
+						game_state.curr_state = INIT;
+						vg_start();
+					}
+
+					else if (game_state.curr_state == INIT && scancode == 0x1C)
 					{
 						game_state.curr_state = PLAY;
 
@@ -153,11 +147,32 @@ int game_loop() {
 						vg_game();
 
 						// draw time bar
-						vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
+						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
 
 						// draw queen
 						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
 						start_time = timer_get_ellapsed_time();
+					}
+					else if(game_state.curr_state == PLAY && scancode == 0x93)
+					{
+						//init all values
+						game_state = init_game();
+						start_time = timer_get_ellapsed_time();
+						state = init_mouse_state();
+						x = 251;
+						y = 35;
+						color = 63;
+
+						game_state.curr_state = PLAY;
+
+						// draw board
+						vg_game();
+
+						// draw time bar
+						vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
+
+						// draw queen
+						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
 					}
 					else if(game_state.curr_state == PLAY)
 						move_handler(scancode, &x, &y, &color, &game_state);
@@ -178,37 +193,49 @@ int game_loop() {
 		//			graphics_invalidated = 0;
 		//		}
 
-
 		if(game_state.curr_state == PLAY)
 		{
-			if(endOfTime == 1)
-			{
-				if((timer_get_ellapsed_time() - start_time) <= 5)
-					showGameOver();
-				else
-				{
-					showSolution();
-					game_state.curr_state = SOLUTION;
-				}
-			}
-			else if((timer_get_ellapsed_time() - start_time) == 1 && endOfTime == 0)
+			if((timer_get_ellapsed_time() - start_time) == 1)
 			{
 				// update time bar
-				if(widthR > 0)
+				if(game_state.widthR > 0)
 				{
-					xi += 100;
-					widthR -= 100;
+					game_state.xi += 30;
+					game_state.widthR -= 30;
 
 					vg_draw_rectangle(30, 716, 964, 30, 56);
-					if(widthR < 0)
-						widthR = 0;
-					vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
+					if(game_state.widthR < 0)
+						game_state.widthR = 0;
+					vg_draw_rectangle(game_state.xi, game_state.yi, game_state.widthR, game_state.heightR, game_state.colorR);
 					start_time = timer_get_ellapsed_time();
 				}
 				else
-					endOfTime = 1;
+					game_state.curr_state = LOSE;
 			}
 		}
+
+		if(game_state.curr_state == LOSE)
+		{
+			if((timer_get_ellapsed_time() - start_time) <= 5)
+				showGameOver();
+			else
+			{
+				showSolution();
+				game_state.curr_state = END_PLAY;
+			}
+		}
+
+		if(game_state.curr_state == WIN)
+		{
+			showYouWin();
+			game_state.curr_state = END_PLAY;
+		}
+
+
+		if(game_state.curr_state == END_PLAY)
+			showOptions();
+
+
 	}
 
 	vg_exit();
@@ -345,8 +372,6 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		printBoard(game_state->board);
 		if(!is_valid(game_state->board, x_coord, y_coord))
 		{
-
-			printf("posição errada!\n");
 			game_state->board[y_coord][x_coord] = 0;
 			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
@@ -354,21 +379,27 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		else
 		{
 			//inicial position of queen
+			game_state->n_queens++;
 
-			if(game_state->board[0][0] == 1)
+			if(game_state->n_queens < 8)
 			{
-				*x = 251+81;
-				*color = COLOR_DARK_GREY;
+				if(game_state->board[0][0] == 1)
+				{
+					*x = 251+81;
+					*color = COLOR_DARK_GREY;
+				}
+				else
+				{
+					*x = 251;
+					*color = COLOR_WHITE;
+				}
+
+				*y = 35;
+				pixmap = read_xpm(queen, &width, &height);
+				vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 			}
 			else
-			{
-				*x = 251;
-				*color = COLOR_WHITE;
-			}
-
-			*y = 35;
-			pixmap = read_xpm(queen, &width, &height);
-			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+				game_state->curr_state = WIN;
 		}
 		return 0;
 
@@ -391,10 +422,30 @@ void showGameOver()
 {
 	int width;
 	int height;
-	char** queen = pixmap_get_image(7);
-	char* pixmap = read_xpm(queen, &width, &height);
+	char** gameOver = pixmap_get_image(7);
+	char* pixmap = read_xpm(gameOver, &width, &height);
 
-	vg_draw_pixmap(379, 338, pixmap, width, height);
+	vg_draw_pixmap(297, 330, pixmap, width, height);
+}
+
+void showYouWin()
+{
+	int width;
+	int height;
+	char** win = pixmap_get_image(8);
+	char* pixmap = read_xpm(win, &width, &height);
+
+	vg_draw_pixmap(354, 338, pixmap, width, height);
+}
+
+void showOptions()
+{
+	//	int width;
+	//	int height;
+	//	char** win = pixmap_get_image(8);
+	//	char* pixmap = read_xpm(win, &width, &height);
+	//
+	//	vg_draw_pixmap(379, 338, pixmap, width, height);
 }
 
 void showSolution()
