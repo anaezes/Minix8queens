@@ -238,15 +238,11 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 	char** queen = pixmap_get_image(1);
 	char* pixmap = read_xpm(queen, &width, &height);
 
-
 	int x_coord;
 	int y_coord;
 
 	int tmp_x = *x;
 	int tmp_y = *y;
-
-	int x_square = *x;
-	int y_square = *y;
 
 	switch (code) {
 	case 0xCD: //right
@@ -335,11 +331,6 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		x_coord = (*x - 251)/81;
 		y_coord = (*y - 35)/81;
 
-		//		printf("x: %d\n", *x);
-		//		printf("y: %d\n", *y);
-		//		printf("x_coord: %d\n", x_coord);
-		//		printf("y_coord: %d\n\n", y_coord);
-
 		game_state->board[y_coord][x_coord] = 1;
 		printBoard(game_state->board);
 		if(!is_valid(game_state->board, x_coord, y_coord))
@@ -347,7 +338,7 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 
 			printf("posição errada!\n");
 			game_state->board[y_coord][x_coord] = 0;
-			vg_draw_rectangle(x_square, y_square, 82, 82, COLOR_RED);
+			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		}
 		else
