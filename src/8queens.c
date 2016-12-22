@@ -76,6 +76,7 @@ int game_loop() {
 	int finished = 0;
 	int second_time = 0;
 	int start_time = timer_get_ellapsed_time();
+	int endOfTime = 0;
 
 	mouse_state state = init_mouse_state();
 
@@ -161,7 +162,6 @@ int game_loop() {
 					else if(game_state.curr_state == PLAY)
 						move_handler(scancode, &x, &y, &color, &game_state);
 
-
 				}
 
 				break;
@@ -181,22 +181,32 @@ int game_loop() {
 
 		if(game_state.curr_state == PLAY)
 		{
-			if((timer_get_ellapsed_time() - start_time) == 1)
+			if(endOfTime == 1)
+			{
+				if((timer_get_ellapsed_time() - start_time) <= 5)
+					showGameOver();
+				else
+				{
+					showSolution();
+					game_state.curr_state = SOLUTION;
+				}
+			}
+			else if((timer_get_ellapsed_time() - start_time) == 1 && endOfTime == 0)
 			{
 				// update time bar
 				if(widthR > 0)
 				{
-					xi += 2;
-					widthR -= 2;
+					xi += 100;
+					widthR -= 100;
 
 					vg_draw_rectangle(30, 716, 964, 30, 56);
+					if(widthR < 0)
+						widthR = 0;
 					vg_draw_rectangle(xi, yi, widthR, heightR, colorR);
 					start_time = timer_get_ellapsed_time();
 				}
 				else
-				{
-					//game over ?
-				}
+					endOfTime = 1;
 			}
 		}
 	}
@@ -230,7 +240,7 @@ int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
 	return 0;
 }
 
-static a = 0;
+
 int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_st* game_state) {
 
 	int width;
@@ -377,3 +387,56 @@ void switchColor(unsigned int *color)
 		*color = COLOR_DARK_GREY;
 }
 
+void showGameOver()
+{
+	int width;
+	int height;
+	char** queen = pixmap_get_image(7);
+	char* pixmap = read_xpm(queen, &width, &height);
+
+	vg_draw_pixmap(379, 338, pixmap, width, height);
+}
+
+void showSolution()
+{
+	vg_game();
+	vg_draw_rectangle(30, 716, 964, 30, 56);
+
+
+	int width;
+	int height;
+	char** queen = pixmap_get_image(1);
+	char* pixmap = read_xpm(queen, &width, &height);
+
+
+	int board[BOARD_SIZE][BOARD_SIZE];
+	int i, j;
+	for(i = 0; i < BOARD_SIZE; i++)
+		for(j = 0; j < BOARD_SIZE; j++)
+			board[i][j] = 0;
+
+	//put 8 queens
+	board[0][3] = 1;
+	board[1][1] = 1;
+	board[2][6] = 1;
+	board[3][4] = 1;
+	board[4][0] = 1;
+	board[5][7] = 1;
+	board[6][5] = 1;
+	board[7][2] = 1;
+
+	int x, y;
+	for(i = 0; i < BOARD_SIZE; i++)
+	{
+		for(j = 0; j < BOARD_SIZE; j++)
+		{
+			if(board[i][j] == 1)
+			{
+				x = (j*81)+251;
+				y = (i*81)+35;
+
+				vg_draw_pixmap(x+3, y+5, pixmap, width, height);
+			}
+		}
+	}
+}

@@ -7,7 +7,7 @@
 #include "Keyboard.h"
 #include "Driver.h"
 
-typedef enum {INIT, PLAY, END} state_t;
+typedef enum {INIT, PLAY, SOLUTION, END} state_t;
 typedef enum {RDOWN, RUP, MOVE} ev_type_t;
 #define BOARD_SIZE 8
 
@@ -36,6 +36,9 @@ int game_loop();
 
 void switchColor(unsigned int *color);
 
+void showGameOver();
+
+void showSolution();
 
 /** @} end of proj */
 
