@@ -29,6 +29,8 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return gameOver;
 	else if(xpm_code == 8)
 		return win;
+	else if(xpm_code == 9)
+		return selected;
 	else
 		return NULL;
 }
