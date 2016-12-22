@@ -26,7 +26,7 @@ int kbc_wait_inbuffer()
 				return 0;
 
 		// wait
-		//tickdelay(micros_to_ticks(WAIT_KBC));
+		tickdelay(micros_to_ticks(WAIT_KBC));
 		n_tries++;
 	}
 
@@ -49,7 +49,7 @@ int kbc_wait_outbuffer(unsigned long *stat)
 				return 0;
 
 		// wait
-		//tickdelay(micros_to_ticks(WAIT_KBC));
+		tickdelay(micros_to_ticks(WAIT_KBC));
 		n_tries++;
 	}
 
@@ -75,7 +75,7 @@ int kbc_read_input(unsigned long *output)
 				return 0;
 		}
 		// wait
-		//tickdelay(micros_to_ticks(WAIT_KBC));
+		tickdelay(micros_to_ticks(WAIT_KBC));
 		n_tries++;
 	}
 
@@ -95,7 +95,7 @@ int kbc_send_command(unsigned long cmd)
 			return sys_outb(KBC_DATA_BUFFER, cmd);
 
 		// wait
-		//tickdelay(micros_to_ticks(WAIT_KBC));
+		tickdelay(micros_to_ticks(WAIT_KBC));
 		n_tries++;
 	}
 	return 1;
@@ -140,7 +140,7 @@ int kbc_write_to_mouse(unsigned long cmd)
 		else if(output == KBC_ERROR)
 			return 1;
 
-		//tickdelay(micros_to_ticks(WAIT_KBC));
+		tickdelay(micros_to_ticks(WAIT_KBC));
 		n_tries++;
 	}
 
