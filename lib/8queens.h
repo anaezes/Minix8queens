@@ -32,7 +32,11 @@ game_st init_game();
 
 int game_loop();
 
-/** @} end of lab5 */
 
+
+void switchColor(unsigned int *color);
+
+
+/** @} end of proj */
 
 #endif /* __PROJECT_H */

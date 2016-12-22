@@ -139,8 +139,7 @@ int game_loop() {
 
 				if (msg.NOTIFY_ARG & irq_set) {
 					int n_bytes = kb_int_handler(&scancode);
-					kb_print_scancode(scancode, n_bytes);
-
+					//kb_print_scancode(scancode, n_bytes);
 					//set state machine in the last state
 					if (scancode == DRIVER_END_SCODE)
 						game_state.curr_state = END;
@@ -159,7 +158,7 @@ int game_loop() {
 						vg_draw_pixmap(x+3, y+5, pixmap, width, height);
 						start_time = timer_get_ellapsed_time();
 					}
-					if(game_state.curr_state == PLAY)
+					else if(game_state.curr_state == PLAY)
 						move_handler(scancode, &x, &y, &color, &game_state);
 
 
@@ -243,39 +242,92 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 	int x_coord;
 	int y_coord;
 
+	int tmp_x = *x;
+	int tmp_y = *y;
+
+	int x_square = *x;
+	int y_square = *y;
+
 	switch (code) {
 	case 0xCD: //right
 		printf("right\n");
-		vg_draw_rectangle(*x, *y, 82, 82, *color);
-		*x += 81;
-		if(*x > 850)
-			*x = 251;
-		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+		tmp_x += 81;
+		if(tmp_x > 850)
+			tmp_x = 251;
+
+		x_coord = (tmp_x - 251)/81;
+		y_coord = (tmp_y - 35)/81;
+		if(game_state->board[y_coord][x_coord] != 1)
+		{
+			vg_draw_rectangle(*x, *y, 82, 82, *color);
+			*x += 81;
+			if(*x > 850)
+				*x = 251;
+
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			switchColor(color);
+		}
 		break;
 	case 0xCB://left
 		printf("left\n");
-		if(*x-81 < 251)
+		if(tmp_x-81 < 251)
 			break;
-		vg_draw_rectangle(*x, *y, 82, 82, *color);
-		*x -= 81;
-		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+		tmp_x -= 81;
+
+		x_coord = (tmp_x - 251)/81;
+		y_coord = (tmp_y - 35)/81;
+		if(game_state->board[y_coord][x_coord] != 1)
+		{
+			vg_draw_rectangle(*x, *y, 82, 82, *color);
+
+			if(*x-81 < 251)
+				break;
+			*x -= 81;
+
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			switchColor(color);
+		}
 		break;
 	case 0xC8: //up
 		printf("up\n");
-		if(*y-81 < 35)
+		if(tmp_y-81 < 35)
 			break;
-		vg_draw_rectangle(*x, *y, 82, 82, *color);
-		*y -= 81;
-		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+		tmp_y -= 81;
+
+		x_coord = (tmp_x - 251)/81;
+		y_coord = (tmp_y - 35)/81;
+		if(game_state->board[y_coord][x_coord] != 1)
+		{
+			vg_draw_rectangle(*x, *y, 82, 82, *color);
+
+			if(*y-81 < 35)
+				break;
+			*y -= 81;
+
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			switchColor(color);
+		}
 		break;
 	case 0xD0: //down
 		printf("down\n");
-		vg_draw_rectangle(*x, *y, 82, 82, *color);
-		*y += 81;
-		if(*y > 650)
-			*y = 35;
+		tmp_y += 81;
+		if(tmp_y > 650)
+			tmp_y = 35;
 
-		vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+		x_coord = (tmp_x - 251)/81;
+		y_coord = (tmp_y - 35)/81;
+		if(game_state->board[y_coord][x_coord] != 1)
+		{
+			vg_draw_rectangle(*x, *y, 82, 82, *color);
+
+			*y += 81;
+			if(*y > 650)
+				*y = 35;
+
+			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
+			switchColor(color);
+		}
+
 		break;
 	case 0x1C: //ENTER
 		//check algorithm
@@ -283,29 +335,37 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 		x_coord = (*x - 251)/81;
 		y_coord = (*y - 35)/81;
 
-		printf("x: %d\n", *x);
-		printf("y: %d\n", *y);
-		printf("x_coord: %d\n", x_coord);
-		printf("y_coord: %d\n\n", y_coord);
-		printf("(%d - 251) / 81", *x);
+		//		printf("x: %d\n", *x);
+		//		printf("y: %d\n", *y);
+		//		printf("x_coord: %d\n", x_coord);
+		//		printf("y_coord: %d\n\n", y_coord);
 
 		game_state->board[y_coord][x_coord] = 1;
-		//printBoard(game_state->board);
-		if(is_valid(game_state->board, y_coord, x_coord) == 1)
+		printBoard(game_state->board);
+		if(!is_valid(game_state->board, x_coord, y_coord))
 		{
 
 			printf("posição errada!\n");
 			game_state->board[y_coord][x_coord] = 0;
-			vg_draw_rectangle(*x, *y, 82, 82, COLOR_RED);
+			vg_draw_rectangle(x_square, y_square, 82, 82, COLOR_RED);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		}
 		else
 		{
 			//inicial position of queen
-			*x = 251;
-			*y = 35;
-			*color = COLOR_WHITE;
 
+			if(game_state->board[0][0] == 1)
+			{
+				*x = 251+81;
+				*color = COLOR_DARK_GREY;
+			}
+			else
+			{
+				*x = 251;
+				*color = COLOR_WHITE;
+			}
+
+			*y = 35;
 			pixmap = read_xpm(queen, &width, &height);
 			vg_draw_pixmap(*x+3, *y+5, pixmap, width, height);
 		}
@@ -315,14 +375,14 @@ int move_handler(unsigned long code, int* x, int* y, unsigned int* color, game_s
 	default:
 		return 0;
 	}
+	return 0;
+}
 
+void switchColor(unsigned int *color)
+{
 	if(*color == COLOR_DARK_GREY)
 		*color = COLOR_WHITE;
 	else
 		*color = COLOR_DARK_GREY;
-
-	return 0;
 }
-
-
 
