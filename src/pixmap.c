@@ -25,6 +25,8 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return logo1;
 	else if(xpm_code == 6)
 		return mouse;
+	else if(xpm_code == 7)
+		return gameOver;
 	else
 		return NULL;
 }
@@ -37,7 +39,6 @@ char** pixmap_get_image(unsigned long xpm_code)
 
 char *read_xpm(char *map[], int *wd, int *ht)
 {
-	printf("aqui \n");
 	int width, height, colors;
 	char sym[256];
 	int  col;
