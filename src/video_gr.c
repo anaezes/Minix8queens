@@ -154,7 +154,7 @@ int vg_game()
 		yi += 162;
 	}
 
-	vg_draw_rectangle(30, 716, 964, 30, 56);
+//	vg_draw_rectangle(30, 716, 964, 30, 56);
 //	vg_draw_rectangle(50, 716, 944, 30, 6);
 
 	return 0;
