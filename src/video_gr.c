@@ -173,9 +173,15 @@ void show_instructions()
 
 	int width;
 	int height;
-	char** selected = pixmap_get_image(10);
-	char* pixmap = read_xpm(selected, &width, &height);
+	char** text1 = pixmap_get_image(10);
+	char* pixmap = read_xpm(text1, &width, &height);
 	vg_draw_pixmap(210,380, pixmap, width, height);
+
+	text1 = pixmap_get_image(11);
+	pixmap = read_xpm(text1, &width, &height);
+	vg_draw_pixmap(330,500, pixmap, width, height);
+
+
 }
 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)

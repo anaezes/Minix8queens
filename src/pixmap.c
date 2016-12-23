@@ -31,6 +31,10 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return win;
 	else if(xpm_code == 9)
 		return selected;
+	else if(xpm_code == 10)
+		return instructions;
+	else if(xpm_code == 11)
+		return instructions2;
 	else
 		return NULL;
 }
