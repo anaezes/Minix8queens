@@ -35,6 +35,8 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return instructions;
 	else if(xpm_code == 11)
 		return instructions2;
+	else if(xpm_code == 12)
+		return instructions3;
 	else
 		return NULL;
 }
