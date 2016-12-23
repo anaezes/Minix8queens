@@ -179,11 +179,15 @@ void show_instructions()
 
 	text1 = pixmap_get_image(11);
 	pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(330,510, pixmap, width, height);
+	vg_draw_pixmap(210,510, pixmap, width, height);
 
 	text1 = pixmap_get_image(12);
 	pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(210,590, pixmap, width, height);
+	vg_draw_pixmap(330,560, pixmap, width, height);
+
+	text1 = pixmap_get_image(13);
+	pixmap = read_xpm(text1, &width, &height);
+	vg_draw_pixmap(210,620, pixmap, width, height);
 
 
 }
