@@ -126,14 +126,14 @@ int game_loop() {
 					if(((packet[0] & BIT(3)) && (packet[0] != KBC_ACK)) != 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 
-						//						if (pos == 2) {
-						//							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-						//							update_mouse_state(&state, packet);
-						//							graphics_invalidated = 1;
-						//
-						//							if(mouse_interrupt_handler(&game_state, &state) == 1)
-						//								start_time = timer_get_ellapsed_time();
-						//						}
+						if (pos == 2) {
+							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
+							update_mouse_state(&state, packet);
+							graphics_invalidated = 1;
+
+							if(mouse_interrupt_handler(&game_state, &state) == 1)
+								start_time = timer_get_ellapsed_time();
+						}
 					}
 				}
 
