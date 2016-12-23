@@ -38,6 +38,8 @@ int vg_game();
 
 void show_selected_menu(int x, int y);
 
+void show_instructions();
+
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color);
 
 void vg_draw_mouse_pointer(int x, int y);

@@ -7,7 +7,7 @@
 #include "Keyboard.h"
 #include "Driver.h"
 
-typedef enum {INIT, PLAY, WIN, LOSE, END_PLAY, END} state_t;
+typedef enum {INIT, SHOW_INSTRUCTIONS, PLAY, WIN, LOSE, END_PLAY, END} state_t;
 typedef enum {INSTRUCTIONS, INIT_PLAY, MENU_EXIT} menu_option_t;
 
 

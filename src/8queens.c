@@ -104,6 +104,7 @@ int game_loop() {
 
 	// if graphics need to be repainted
 	int graphics_invalidated = 0;
+	int show_inst = 0;
 
 	unsigned long scancode = 0x00;
 	int ipc_status, r;
@@ -166,7 +167,11 @@ int game_loop() {
 
 						game_state.curr_state = PLAY;
 						start_game(&game_state, &queens_state);
-
+					}
+					else if(game_state.curr_state == INIT && game_state.curr_option == INSTRUCTIONS && scancode == KEY_ENTER)
+					{
+						game_state.curr_state = SHOW_INSTRUCTIONS;
+						show_inst = 0;
 					}
 					else if(game_state.curr_state == PLAY)
 						move_handler(scancode, &queens_state, &game_state);
@@ -186,6 +191,13 @@ int game_loop() {
 		//			//vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 		//			graphics_invalidated = 0;
 		//		}
+
+		if(game_state.curr_state == SHOW_INSTRUCTIONS && show_inst == 0)
+		{
+			show_instructions();
+			show_inst = 1;
+
+		}
 
 		if(game_state.curr_state == PLAY)
 		{

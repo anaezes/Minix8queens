@@ -158,11 +158,24 @@ int vg_game()
 }
 void show_selected_menu(int x, int y)
 {
+
 	int width;
 	int height;
 	char** selected = pixmap_get_image(9);
 	char* pixmap = read_xpm(selected, &width, &height);
-	vg_draw_pixmap(x, y, pixmap, width, height);
+	vg_draw_pixmap(x,y, pixmap, width, height);
+}
+
+void show_instructions()
+{
+	vg_draw_rectangle(200, 350, 624, 300, COLOR_LIGHT_GREY);
+	vg_draw_rectangle(202, 352, 620, 296, COLOR_BLACK);
+
+	int width;
+	int height;
+	char** selected = pixmap_get_image(10);
+	char* pixmap = read_xpm(selected, &width, &height);
+	vg_draw_pixmap(210,380, pixmap, width, height);
 }
 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)
