@@ -152,7 +152,6 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 	//Compute delta_y
 	if((packet[0] & BIT(7)) != 0)
 	{
-		//printf("Y Overflow\n");
 		state->y_overflow = 1;
 		if((packet[0] & BIT(5)) != 0)
 			state->delta_y = (-1<<8);
@@ -167,6 +166,11 @@ void transform_mouse_values(mouse_state* state, unsigned long *packet)
 		else
 			state->delta_y = (int)packet[2];
 	}
+
+	if(state->delta_y <= -254)
+		state->delta_y = -1;
+	if(state->delta_y >= 254)
+		state->delta_y = 1;
 
 }
 
