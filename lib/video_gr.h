@@ -32,6 +32,8 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
+void vg_clean_dbuffer();
+
 int vg_start();
 
 int vg_game();

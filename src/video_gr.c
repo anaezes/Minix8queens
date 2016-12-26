@@ -26,13 +26,12 @@ static unsigned h_res = H_RES;		/* Horizontal screen resolution in pixels */
 static unsigned v_res = V_RES;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel = BITS_PER_PIXEL; /* Number of VRAM bits per pixel */
 static long vram_size = (H_RES * V_RES);
+static char *dbuffer;
 
 vbe_mode_info_t definitions;
 
 void *vg_init(unsigned short mode)
 {
-
-
 	struct reg86u r;
 	r.u.w.ax = 0x4F02; // VBE call, function 02 -- set VBE mode
 	r.u.w.bx = LINEAR_MODEL_BIT | mode; // set bit 14: linear framebuffer
@@ -71,6 +70,7 @@ void *vg_init(unsigned short mode)
 			return NULL;
 		}
 
+		dbuffer = malloc(vram_size);
 		return (void *)video_mem;
 	}
 	else
@@ -196,7 +196,7 @@ void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex,
 {
 	int i, j;
 
-	char* video_copy = video_mem;
+	char* video_copy = dbuffer;
 	video_copy += x + (y*H_RES);
 
 	for(i = 0; i < sizey; i++)
@@ -224,7 +224,7 @@ void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 {
 	if(color != 2 )
 	{
-		char* video_copy = video_mem;
+		char* video_copy = dbuffer;
 		video_copy = video_copy + ((unsigned short)x + (unsigned short)y * h_res) ;
 		*video_copy=color;
 	}
@@ -254,6 +254,27 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 	}
 }
 
+void vg_display()
+{
+	memcpy(video_mem, dbuffer, vram_size);
+	//vg_clean_dbuffer();
+}
+
+void vg_clean_dbuffer()
+{
+	int i, j;
+
+	char* video_copy = dbuffer;
+
+	for(i = 0; i < V_RES; i++)
+	{
+		for(j = 0; j < H_RES; j++)
+		{
+			*video_copy = COLOR_BLACK;
+			video_copy++;
+		}
+	}
+}
 
 //// returns the state of a rectangle of pixels
 //int* vg_get_area_state(unsigned short xi, unsigned short yi, int width, int height)
