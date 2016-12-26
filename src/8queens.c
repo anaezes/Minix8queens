@@ -90,10 +90,7 @@ int game_loop() {
 	kbc_mouse_init();
 
 	vg_start();
-
-	int x = 300;
-	int y = 400;
-	show_selected_menu(x, y);
+	show_selected_menu(X_INIT_MENU, Y_INIT_MENU);
 
 	game_st game_state = init_game();
 	queens_st queens_state = init_queens();
@@ -184,13 +181,12 @@ int game_loop() {
 				}
 			}
 		}
-		//		if(graphics_invalidated == 1)
-		//		{
-		//			//free(game_state.graphics_state);
-		//			//game_state.graphics_state = vg_get_area_state(state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
-		//			//vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
-		//			graphics_invalidated = 0;
-		//		}
+		if(graphics_invalidated == 1)
+		{
+
+			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+			graphics_invalidated = 0;
+		}
 
 		if(game_state.curr_state == SHOW_INSTRUCTIONS && show_inst == 0)
 		{
@@ -240,6 +236,8 @@ int game_loop() {
 
 		if(game_state.curr_state == END_PLAY)
 			showOptions();
+
+		vg_display();
 	}
 
 	vg_exit();
@@ -257,20 +255,17 @@ int game_loop() {
 void highlight_menu_option(unsigned long scancode, game_st* game_state)
 {
 	menu_option_t new_option;
-	int new_y = Y_INIT_MENU;
 	int moved = 0;
 
 
 	if( game_state->curr_option == INIT_PLAY && scancode == KEY_DOWN)
 	{
 		moved = 1;
-		new_y += 76*2;
 		new_option = MENU_EXIT;
 	}
 	else if(game_state->curr_option == INSTRUCTIONS && scancode == KEY_DOWN)
 	{
 		moved = 1;
-		new_y += 76;
 		new_option = INIT_PLAY;
 	}
 	else if( game_state->curr_option == INIT_PLAY && scancode == KEY_UP)
@@ -281,7 +276,6 @@ void highlight_menu_option(unsigned long scancode, game_st* game_state)
 	else if( game_state->curr_option == MENU_EXIT && scancode == KEY_UP)
 	{
 		moved = 1;
-		new_y += 76;
 		new_option = INIT_PLAY;
 	}
 
@@ -297,12 +291,24 @@ void highlight_menu_option(unsigned long scancode, game_st* game_state)
 		vg_draw_pixmap(X_INIT_MENU, Y_INIT_MENU, pixmap, width, height);
 
 		//new selected menu
-		show_selected_menu(X_INIT_MENU, new_y);
+		show_selected_menu(X_INIT_MENU, get_menu_y_coordinate(new_option));
 		game_state->curr_option = new_option ;
 
 	}
 }
 
+
+int get_menu_y_coordinate(menu_option_t curr_option)
+{
+	if(curr_option == INIT_PLAY)
+		return Y_INIT_MENU + 76;
+
+	else if(curr_option == INSTRUCTIONS)
+		return Y_INIT_MENU;
+
+	else if(curr_option == MENU_EXIT)
+		return Y_INIT_MENU+2*76;
+}
 
 void start_game(game_st* game_state, queens_st* queens_state)
 {
