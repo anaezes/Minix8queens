@@ -6,6 +6,11 @@
 #include "i8042.h"
 #include "Keyboard.h"
 #include "Driver.h"
+#include "pixmap.h"
+#include "sprite.h"
+#include "Mouse.h"
+#include "algorithm.h"
+#include "rtc.h"
 
 typedef enum {INIT, SHOW_INSTRUCTIONS, PLAY, WIN, LOSE, END_PLAY, END} state_t;
 typedef enum {INSTRUCTIONS, INIT_PLAY, MENU_EXIT} menu_option_t;

@@ -6,10 +6,6 @@
 #include <math.h>
 
 #include "../lib/8queens.h"
-#include "../lib/pixmap.h"
-#include "../lib/sprite.h"
-#include "../lib/Mouse.h"
-#include "../lib/algorithm.h"
 
 unsigned long packet[MOUSE_PACKET_SIZE];
 unsigned long config[MOUSE_CONFIG_SIZE];
@@ -84,7 +80,6 @@ int game_loop() {
 	}
 
 	kbc_mouse_init();
-
 	load_pixmaps();
 	vg_start();
 	show_selected_menu(X_INIT_MENU, Y_INIT_MENU);
@@ -92,7 +87,12 @@ int game_loop() {
 	game_st game_state = init_game();
 	queens_st queens_state = init_queens();
 
-	//game_state.graphics_state = vg_get_area_state(MOUSE_INIT_X, MOUSE_INIT_Y,  MOUSE_WIDTH, MOUSE_HEIGHT);
+	//RTC
+	date_t curr_date = get_curr_date();
+	show_date(&curr_date);
+	int curr_time = timer_get_ellapsed_time();
+
+
 	int start_time = timer_get_ellapsed_time();
 	mouse_state state = init_mouse_state();
 
@@ -265,6 +265,12 @@ int game_loop() {
 		if(game_state.curr_state == END_PLAY)
 			showOptions();
 
+		if((timer_get_ellapsed_time() - curr_time) >= 1)
+		{
+			curr_date = get_curr_date();
+			show_date(&curr_date);
+			curr_time = timer_get_ellapsed_time();
+		}
 
 		vg_display();
 	}
