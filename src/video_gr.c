@@ -21,7 +21,7 @@
 
 /* Private global variables */
 
-static char *video_mem = VRAM_PHYS_ADDR;		/* Process address to which VRAM is mapped */
+static char *video_mem = (char*)VRAM_PHYS_ADDR;		/* Process address to which VRAM is mapped */
 static unsigned h_res = H_RES;		/* Horizontal screen resolution in pixels */
 static unsigned v_res = V_RES;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel = BITS_PER_PIXEL; /* Number of VRAM bits per pixel */
@@ -95,7 +95,6 @@ int vg_exit() {
 		return 0;
 }
 
-
 int vg_start()
 {
 	vg_draw_rectangle(0, 0, H_RES, V_RES, 64);
@@ -104,16 +103,10 @@ int vg_start()
 	vg_draw_rectangle(0, 100, 1024, 200, 56);
 
 	//DRAW LOGO
-	int width;
-	int height;
-//	char** logo = pixmap_get_image(5);
-//	char* pixmap = read_xpm(logo, &width, &height);
 	pixmap_t px = get_pixmap(PXMAP_LOGO1);
 	vg_draw_pixmap(50, 120, px.pixmap, px.width, px.height);
 
 	//DRAW MENU
-//	char** menu = pixmap_get_image(4);
-//	pixmap = read_xpm(menu, &width, &height);
 	px = get_pixmap(PXMAP_MENU);
 	vg_draw_pixmap(300, 400, px.pixmap, px.width, px.height);
 
@@ -127,17 +120,16 @@ int vg_game()
 	vg_draw_rectangle(0, 0, H_RES, V_RES, 0);
 
 	//DRAW SMALL LOGO
-	int width;
-	int height;
-	char** logo = pixmap_get_image(3);
-	char* pixmap = read_xpm(logo, &width, &height);
-	vg_draw_pixmap(25, 15, pixmap, width, height);
+	pixmap_t px = get_pixmap(PXMAP_LOGO);
+	vg_draw_pixmap(25, 15, px.pixmap, px.width, px.height);
+
+	px = get_pixmap(PXMAP_OPTIONS);
+	vg_draw_pixmap(28, 130, px.pixmap, px.width, px.height);
 
 	vg_draw_rectangle(244, 30, 663, 663, 63);
 
 	//DRAW MENU
-	char** board= pixmap_get_image(2);
-	char* pixmap1 = read_xpm(board, &width, &height);
+	px = get_pixmap(PXMAP_SQUARE);
 
 	int xi = 250;
 	int yi = 36;
@@ -147,24 +139,20 @@ int vg_game()
 	{
 		for(i = 0; i < 4; i++)
 		{
-			vg_draw_pixmap(xi, yi, pixmap1, width, height);
+			vg_draw_pixmap(xi, yi, px.pixmap, px.width, px.height);
 			xi += 162;
 		}
-
 		xi = 250;
 		yi += 162;
 	}
 
 	return 0;
 }
+
 void show_selected_menu(int x, int y)
 {
-
-	int width;
-	int height;
-	char** selected = pixmap_get_image(9);
-	char* pixmap = read_xpm(selected, &width, &height);
-	vg_draw_pixmap(x,y, pixmap, width, height);
+	pixmap_t px = get_pixmap(PXMAP_SELECTED);
+	vg_draw_pixmap(x,y, px.pixmap, px.width, px.height);
 }
 
 void show_instructions()
@@ -172,25 +160,17 @@ void show_instructions()
 	vg_draw_rectangle(200, 350, 624, 300, COLOR_LIGHT_GREY);
 	vg_draw_rectangle(202, 352, 620, 296, COLOR_BLACK);
 
-	int width;
-	int height;
-	char** text1 = pixmap_get_image(10);
-	char* pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(210,390, pixmap, width, height);
+	pixmap_t px = get_pixmap(PXMAP_INSTRUCTS);
+	vg_draw_pixmap(210,390, px.pixmap, px.width, px.height);
 
-	text1 = pixmap_get_image(11);
-	pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(210,510, pixmap, width, height);
+	px = get_pixmap(PXMAP_INSTRUCTS1);
+	vg_draw_pixmap(210, 510, px.pixmap, px.width, px.height);
 
-	text1 = pixmap_get_image(12);
-	pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(330,560, pixmap, width, height);
+	px = get_pixmap(PXMAP_INSTRUCTS2);
+	vg_draw_pixmap(330,560, px.pixmap, px.width, px.height);
 
-	text1 = pixmap_get_image(13);
-	pixmap = read_xpm(text1, &width, &height);
-	vg_draw_pixmap(210,620, pixmap, width, height);
-
-
+	px = get_pixmap(PXMAP_INSTRUCTS3);
+	vg_draw_pixmap(210, 620, px.pixmap, px.width, px.height);
 }
 
 void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex, unsigned short sizey, unsigned long color)
@@ -213,12 +193,8 @@ void vg_draw_rectangle(unsigned short x, unsigned short y, unsigned short sizex,
 
 void vg_draw_mouse_pointer(int x, int y)
 {
-	int width;
-	int height;
-	char** mouse= pixmap_get_image(6);
-	char* pixmap = read_xpm(mouse, &width, &height);
-	vg_draw_pixmap(x, y, pixmap, width, height);
-
+	pixmap_t px = get_pixmap(PXMAP_MOUSE);
+	vg_draw_pixmap(x, y, px.pixmap, px.width, px.height);
 }
 
 void set_pixel(unsigned short x, unsigned short y, unsigned long color)
@@ -229,15 +205,7 @@ void set_pixel(unsigned short x, unsigned short y, unsigned long color)
 		video_copy = video_copy + ((unsigned short)x + (unsigned short)y * h_res) ;
 		*video_copy=color;
 	}
-
 }
-
-int get_pixel(unsigned short x, unsigned short y)
-{
-	//gives a color of a pixel
-	return (video_mem + ((unsigned short)x + (unsigned short)y * h_res));
-}
-
 
 void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int width, int height)
 {
@@ -247,7 +215,6 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 		int j = 0;
 		while(j < height)
 		{
-
 			set_pixel(xi + i, yi + j, *(pixmap + (i + j * width)));
 			j++;
 		}
@@ -258,22 +225,6 @@ void vg_draw_pixmap(unsigned short xi, unsigned short yi, char* pixmap, int widt
 void vg_display()
 {
 	memcpy(video_mem, dbuffer, vram_size);
-	//vg_clean_dbuffer();
 }
 
-void vg_clean_dbuffer()
-{
-	int i, j;
-
-	char* video_copy = dbuffer;
-
-	for(i = 0; i < V_RES; i++)
-	{
-		for(j = 0; j < H_RES; j++)
-		{
-			*video_copy = COLOR_BLACK;
-			video_copy++;
-		}
-	}
-}
 
