@@ -89,6 +89,7 @@ int game_loop() {
 
 	kbc_mouse_init();
 
+	load_pixmaps();
 	vg_start();
 	show_selected_menu(X_INIT_MENU, Y_INIT_MENU);
 
@@ -183,7 +184,7 @@ int game_loop() {
 		}
 		if(graphics_invalidated == 1)
 		{
-
+			repaint(&game_state);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
@@ -309,6 +310,41 @@ int get_menu_y_coordinate(menu_option_t curr_option)
 	else if(curr_option == MENU_EXIT)
 		return Y_INIT_MENU+2*76;
 }
+
+
+void repaint(game_st* game_state)
+{
+	if(game_state->curr_state == INIT)
+	{
+		vg_start();
+		show_selected_menu(X_INIT_MENU, get_menu_y_coordinate(game_state->curr_option));
+
+	}
+	else if(game_state->curr_state == SHOW_INSTRUCTIONS)
+	{
+	}
+	else if(game_state->curr_state == PLAY)
+	{
+
+	}
+	else if(game_state->curr_state == WIN)
+	{
+
+	}
+	else if(game_state->curr_state == LOSE)
+	{
+
+	}
+	else if(game_state->curr_state == END_PLAY)
+	{
+
+	}
+	else if(game_state->curr_state == END)
+	{
+
+	}
+}
+
 
 void start_game(game_st* game_state, queens_st* queens_state)
 {

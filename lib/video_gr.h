@@ -3,6 +3,7 @@
 
 #include "vbe.h"
 #include "sprite.h"
+#include "pixmap.h"
 
 //#include "lmlib.h"
 

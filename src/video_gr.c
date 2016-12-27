@@ -106,20 +106,21 @@ int vg_start()
 	//DRAW LOGO
 	int width;
 	int height;
-	char** logo = pixmap_get_image(5);
-	char* pixmap = read_xpm(logo, &width, &height);
-	vg_draw_pixmap(50, 120, pixmap, width, height);
+//	char** logo = pixmap_get_image(5);
+//	char* pixmap = read_xpm(logo, &width, &height);
+	pixmap_t px = get_pixmap(PXMAP_LOGO1);
+	vg_draw_pixmap(50, 120, px.pixmap, px.width, px.height);
 
 	//DRAW MENU
-	char** menu = pixmap_get_image(4);
-	pixmap = read_xpm(menu, &width, &height);
-	vg_draw_pixmap(300, 400, pixmap, width, height);
+//	char** menu = pixmap_get_image(4);
+//	pixmap = read_xpm(menu, &width, &height);
+	px = get_pixmap(PXMAP_MENU);
+	vg_draw_pixmap(300, 400, px.pixmap, px.width, px.height);
 
 	// RTC (?)
 
 	return 0;
 }
-
 
 int vg_game()
 {

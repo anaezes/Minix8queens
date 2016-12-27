@@ -28,6 +28,11 @@ void load_pixmaps()
 	}
 }
 
+pixmap_t get_pixmap(int pos)
+{
+	return pixmaps[pos-1];
+}
+
 char** pixmap_get_image(unsigned long xpm_code)
 {
 

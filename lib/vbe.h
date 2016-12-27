@@ -54,6 +54,23 @@
 #define X_INIT_MENU			300
 #define Y_INIT_MENU			400
 
+// Pixmaps
+#define PXMAP_QUEEN			1
+#define PXMAP_SQUARE		2
+#define PXMAP_LOGO			3
+#define PXMAP_MENU			4
+#define PXMAP_LOGO1			5
+#define PXMAP_MOUSE			6
+#define PXMAP_GAME_OVER		7
+#define PXMAP_WIN			8
+#define PXMAP_SELECTED		9
+#define PXMAP_INSTRUCTS		10
+#define PXMAP_INSTRUCTS1	11
+#define PXMAP_INSTRUCTS2	12
+#define PXMAP_INSTRUCTS3	13
+
+#define N_PIXMAP			13
+
 typedef struct {
   /*  Mandatory information for all VBE revisions */
   uint16_t ModeAttributes; 	/**< @brief mode attributes */
