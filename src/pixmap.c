@@ -10,6 +10,24 @@
 #include "../lib/pixmap.h"
 #include "../lib/vbe.h"
 
+static pixmap_t *pixmaps;
+
+/**
+ * Static load of all xpm images needed
+ * */
+void load_pixmaps()
+{
+	int width, height;
+	pixmaps = malloc(sizeof(pixmap_t) * N_PIXMAP);
+
+	int i;
+	for(i = 0; i < N_PIXMAP; i++) {
+		pixmaps[i].pixmap = read_xpm(pixmap_get_image(i+1), &width, &height);
+		pixmaps[i].width = width;
+		pixmaps[i].height = height;
+	}
+}
+
 char** pixmap_get_image(unsigned long xpm_code)
 {
 

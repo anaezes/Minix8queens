@@ -1,8 +1,17 @@
 #ifndef __PIXMAP_H
 #define __PIXMAP_H
 
+
+typedef struct pixmap_t
+{
+	char* pixmap;
+	int width;
+	int height;
+} pixmap_t;
+
 char** pixmap_get_image(unsigned long xpm_code);
 char *read_xpm(char *map[], int *wd, int *ht);
+void load_pixmaps();
 
 static char *mouse[] = {
 		/* columns rows colors chars-per-pixel */
