@@ -10,7 +10,6 @@
 typedef enum {INIT, SHOW_INSTRUCTIONS, PLAY, WIN, LOSE, END_PLAY, END} state_t;
 typedef enum {INSTRUCTIONS, INIT_PLAY, MENU_EXIT} menu_option_t;
 
-
 typedef struct game_st
 {
 	state_t curr_state;
@@ -28,13 +27,9 @@ typedef struct queens_st
 	int x;
 	int y;
 	unsigned int color;
-	int width;
-	int height;
-	char** queen;
-	char* pixmap;
+	pixmap_t px;
 
 } queens_st;
-
 
 game_st init_game();
 
@@ -44,7 +39,7 @@ int game_loop();
 
 int get_menu_y_coordinate(menu_option_t curr_option);
 
-void repaint(game_st* game_state);
+void repaint(game_st* game_state, queens_st* queens_state);
 
 void start_game(game_st* game_state, queens_st* queens_state);
 
@@ -59,6 +54,10 @@ void showYouWin();
 void showSolution();
 
 void showOptions();
+
+void print_queens(game_st* game_state);
+
+void print_time_bar(game_st* game_state);
 
 /** @} end of proj */
 
