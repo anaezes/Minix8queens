@@ -68,8 +68,9 @@
 #define PXMAP_INSTRUCTS1	11
 #define PXMAP_INSTRUCTS2	12
 #define PXMAP_INSTRUCTS3	13
+#define PXMAP_OPTIONS		14
 
-#define N_PIXMAP			13
+#define N_PIXMAP			14
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */
