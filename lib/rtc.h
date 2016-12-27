@@ -28,6 +28,18 @@
 #define UIP 				(1 << 7)
 #define UIE 				(1 << 4)
 
+typedef struct date_t
+{
+	unsigned long hour;
+	unsigned long min;
+	unsigned long sec;
+
+	unsigned long day;
+	unsigned long month;
+	unsigned long year;
+
+} date_t;
+
 
 void rtc_enable_interrupts();
 void rtc_disable_interrupts();
@@ -36,8 +48,13 @@ void wait_valid_rtc();
 
 unsigned long BCD_TO_BIN(unsigned long value);
 
-int getTime(unsigned long *hour, unsigned long *min, unsigned long *sec);
-int getDate(unsigned long *day, unsigned long *month, unsigned long *year);
+int getTime(unsigned long* hour, unsigned long* min, unsigned long* sec);
+
+int getDate(unsigned long* day, unsigned long* month, unsigned long* year);
+
+date_t get_curr_date();
+
+void show_date(date_t* date);
 
 void loop();
 
