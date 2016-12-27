@@ -183,7 +183,7 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 	else
 		state->r_button_state = 0;
 
-	if((packet[0] & BIT(2)) != 0)
+	if((packet[0] & BIT(0)) != 0)
 		state->l_button_state = 1;
 	else
 		state->l_button_state = 0;
