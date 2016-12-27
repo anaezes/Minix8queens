@@ -276,34 +276,3 @@ void vg_clean_dbuffer()
 	}
 }
 
-//// returns the state of a rectangle of pixels
-//int* vg_get_area_state(unsigned short xi, unsigned short yi, int width, int height)
-//{
-//	int* area_state = malloc(sizeof(int)*width*height);
-//
-//	int i, j;
-//	for(i = 0; i < height; i++)
-//		for(j = 0; j < width; j++)
-//			area_state[j + i*width] = get_pixel(xi+j, yi+i);
-//
-//	return area_state;
-//}
-//
-//
-//// resets an area of pixels to the given state
-//void vg_reset_area_state(int* area_state, unsigned short xi, unsigned short yi, int width, int height)
-//{
-//	int i, j;
-//	for(i = 0; i < height; i++)
-//		for(j = 0; j < width; j++)
-//		{
-//			printf("xi+j: %d\n", (xi+j));
-//			printf("yi+i: %d\n", (yi+i));
-//			printf("color: %d\n", area_state[j + i*width]);
-//			printf("pos: %d\n", (j + i*width));
-//
-//			set_pixel(xi+j, yi+i, area_state[j + i*width]);
-//		}
-//}
-
-
