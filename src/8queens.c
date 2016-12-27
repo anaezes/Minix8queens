@@ -125,14 +125,32 @@ int game_loop() {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 
 						if (pos == 2) {
-							//vg_reset_area_state(game_state.graphics_state, state.curr_position_x, state.curr_position_y,  MOUSE_WIDTH, MOUSE_HEIGHT);
 							update_mouse_state(&state, packet);
 							graphics_invalidated = 1;
 
-							if(mouse_interrupt_handler(&game_state, &state) == 1)
-								start_time = timer_get_ellapsed_time();
+							if(mouse_menu_click_handler(&game_state, &state) == 1)
+							{
+								if(game_state.curr_option == INIT_PLAY)
+								{
+									game_state = init_game();
+									queens_state = init_queens();
+									start_time = timer_get_ellapsed_time();
+
+									game_state.curr_state = PLAY;
+									start_game(&game_state, &queens_state);
+								}
+								else if(game_state.curr_option == INSTRUCTIONS)
+								{
+									game_state.curr_state = SHOW_INSTRUCTIONS;
+									show_inst = 0;
+								}
+								else if(game_state.curr_option == MENU_EXIT)
+									game_state.curr_state = END;
+							}
 						}
 					}
+
+
 				}
 
 
@@ -182,7 +200,9 @@ int game_loop() {
 				}
 			}
 		}
-		if(graphics_invalidated == 1)
+
+
+		if(game_state.curr_state == INIT && graphics_invalidated == 1)
 		{
 			repaint(&game_state);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
@@ -237,6 +257,7 @@ int game_loop() {
 
 		if(game_state.curr_state == END_PLAY)
 			showOptions();
+
 
 		vg_display();
 	}
@@ -359,23 +380,38 @@ void start_game(game_st* game_state, queens_st* queens_state)
 
 }
 
-int mouse_interrupt_handler(game_st* game_state, mouse_state* mouse)
+/**
+ * return 1 if mouse clicked
+ * */
+int mouse_menu_click_handler(game_st* game_state, mouse_state* mouse)
 {
 	if(game_state->curr_state == INIT)
 	{
 		if (mouse->l_button_state == 1)
 		{
-			if ((mouse->curr_position_x >= 296 && mouse->curr_position_x <= 666) &&
-					(mouse->curr_position_y >= 537 && mouse->curr_position_y <= 590))
+			if((mouse->curr_position_x >= 300 && mouse->curr_position_x <= 660) &&
+					(mouse->curr_position_y >= 405 && mouse->curr_position_y <= 447))
 			{
-				game_state->curr_state = PLAY;
+				game_state->curr_option = INSTRUCTIONS;
+				return 1;
+			}
+			else if((mouse->curr_position_x >= 300 && mouse->curr_position_x <= 660) &&
+					(mouse->curr_position_y >= 477 && mouse->curr_position_y <= 522))
+			{
+				game_state->curr_option = INIT_PLAY;
+				return 1;
+			}
+			else if((mouse->curr_position_x >= 300 && mouse->curr_position_x <= 660) &&
+					(mouse->curr_position_y >= 554 && mouse->curr_position_y <= 600))
+			{
+				game_state->curr_option = MENU_EXIT;
 				return 1;
 			}
 		}
 	}
+
 	return 0;
 }
-
 
 int move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
 
