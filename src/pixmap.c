@@ -36,7 +36,7 @@ pixmap_t get_pixmap(int pos)
 char** pixmap_get_image(unsigned long xpm_code)
 {
 	if (xpm_code == 1)
-		return queenW;
+		return queen1;
 	else if(xpm_code == 2)
 		return square;
 	else if(xpm_code == 3)
@@ -63,10 +63,11 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return instructions3;
 	else if(xpm_code == 14)
 		return options;
+	else if(xpm_code == 15)
+		return queen2;
 	else
 		return NULL;
 }
-
 
 /**
  *  @author Joao Cardoso (jcard@fe.up.pt) ????

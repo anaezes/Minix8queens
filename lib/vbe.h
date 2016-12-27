@@ -34,7 +34,6 @@
 #define GRAPHIC_MODE 		0x105
 #define VBE_MODE_SIZE 		256
 
-
 //DEFINE COLORS
 #define COLOR_RED			4
 #define COLOR_GOLD			6
@@ -69,8 +68,9 @@
 #define PXMAP_INSTRUCTS2	12
 #define PXMAP_INSTRUCTS3	13
 #define PXMAP_OPTIONS		14
+#define PXMAP_QUEEN2		15
 
-#define N_PIXMAP			14
+#define N_PIXMAP			15
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */

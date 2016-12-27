@@ -42,11 +42,10 @@ game_st init_game()
 queens_st init_queens()
 {
 	queens_st state;
-
 	state.x = X_INIT_QUEEN;
 	state.y = Y_INIT_QUEEN;
 	state.color = COLOR_WHITE;
-	state.px = get_pixmap(PXMAP_QUEEN);
+	state.px = get_pixmap(PXMAP_QUEEN2);
 
 	return state;
 }
@@ -545,6 +544,9 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 		}
 		else
 		{
+			pixmap_t px = get_pixmap(PXMAP_QUEEN);
+			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, px.pixmap, px.width, px.height);
+
 			//inicial position of queen
 			game_state->n_queens++;
 
@@ -647,7 +649,7 @@ void showSolution()
 
 void print_queens(game_st* game_state)
 {
-	pixmap_t px = get_pixmap(PXMAP_QUEEN);
+	pixmap_t px = get_pixmap(PXMAP_QUEEN2);
 	int i, j;
 	int x, y;
 	for(i = 0; i < BOARD_SIZE; i++)
