@@ -70,7 +70,10 @@
 #define PXMAP_OPTIONS		14
 #define PXMAP_QUEEN2		15
 
+#define PXMAP_DPOINTS		10
+
 #define N_PIXMAP			15
+#define N_DIGITS_PIXMAP		10
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */
