@@ -655,7 +655,7 @@ void showSolution()
 
 void print_queens(game_st* game_state)
 {
-	pixmap_t px = get_pixmap(PXMAP_QUEEN2);
+	pixmap_t px = get_pixmap(PXMAP_QUEEN);
 	int i, j;
 	int x, y;
 	for(i = 0; i < BOARD_SIZE; i++)
