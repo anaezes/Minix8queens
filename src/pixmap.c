@@ -32,9 +32,10 @@ void load_pixmaps()
 	digits_pixmaps = malloc(sizeof(pixmap_t) * N_DIGITS_PIXMAP);
 	for(i = 0; i < N_DIGITS_PIXMAP; i++)
 	{
-		pixmaps[i].pixmap = read_xpm(pixmap_get_digit(i), &width, &height);
-		pixmaps[i].width = width;
-		pixmaps[i].height = height;
+		printf("pixmap:   i %d\n\n", i);
+		digits_pixmaps[i].pixmap = read_xpm(pixmap_get_digit(i), &width, &height);
+		digits_pixmaps[i].width = width;
+		digits_pixmaps[i].height = height;
 	}
 }
 
