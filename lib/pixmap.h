@@ -1,6 +1,9 @@
 #ifndef __PIXMAP_H
 #define __PIXMAP_H
 
+#include "digits_pixmap.h"
+
+
 typedef struct pixmap_t
 {
 	char* pixmap;
@@ -9,6 +12,7 @@ typedef struct pixmap_t
 } pixmap_t;
 
 char** pixmap_get_image(unsigned long xpm_code);
+char** pixmap_get_digit(unsigned long xpm_code);
 char *read_xpm(char *map[], int *wd, int *ht);
 void load_pixmaps();
 pixmap_t get_pixmap(int pos);

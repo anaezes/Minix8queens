@@ -11,6 +11,7 @@
 #include "../lib/vbe.h"
 
 static pixmap_t *pixmaps;
+static pixmap_t *digits_pixmaps;
 
 /**
  * Static load of all xpm images needed
@@ -21,8 +22,17 @@ void load_pixmaps()
 	pixmaps = malloc(sizeof(pixmap_t) * N_PIXMAP);
 
 	int i;
-	for(i = 0; i < N_PIXMAP; i++) {
+	for(i = 0; i < N_PIXMAP; i++)
+	{
 		pixmaps[i].pixmap = read_xpm(pixmap_get_image(i+1), &width, &height);
+		pixmaps[i].width = width;
+		pixmaps[i].height = height;
+	}
+
+	digits_pixmaps = malloc(sizeof(pixmap_t) * N_DIGITS_PIXMAP);
+	for(i = 0; i < N_DIGITS_PIXMAP; i++)
+	{
+		pixmaps[i].pixmap = read_xpm(pixmap_get_digit(i), &width, &height);
 		pixmaps[i].width = width;
 		pixmaps[i].height = height;
 	}
@@ -69,6 +79,33 @@ char** pixmap_get_image(unsigned long xpm_code)
 		return NULL;
 }
 
+char** pixmap_get_digit(unsigned long xpm_code)
+{
+	if(xpm_code == 0)
+		return zero;
+	else if (xpm_code == 1)
+		return one;
+	else if(xpm_code == 2)
+		return two;
+	else if(xpm_code == 3)
+		return three;
+	else if(xpm_code == 4)
+		return four;
+	else if(xpm_code == 5)
+		return five;
+	else if(xpm_code == 6)
+		return six;
+	else if(xpm_code == 7)
+		return seven;
+	else if(xpm_code == 8)
+		return eight;
+	else if(xpm_code == 9)
+		return nine;
+	else if(xpm_code == 10)
+		return points;
+	else
+		return NULL;
+}
 /**
  *  @author Joao Cardoso (jcard@fe.up.pt) ????
  *  Added by pfs@fe.up.pt
