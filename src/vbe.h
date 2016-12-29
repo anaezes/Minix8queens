@@ -8,7 +8,6 @@
 
 #include "Common.h"
 
-
 /** @defgroup vbe vbe
  * @{
  *
