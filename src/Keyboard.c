@@ -1,6 +1,6 @@
 /* Keyboard functions */
 
-#include "../lib/Keyboard.h"
+#include "Keyboard.h"
 
 int special = 0;
 unsigned int kbc_kb_hook_id = KB_IRQ;

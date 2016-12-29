@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include "i8254.h"
 #include "Common.h"
+#include "digits_pixmap.h"
+#include "pixmap.h"
+#include "vbe.h"
 
 #define RTC_IRQ_LINE		8
 

@@ -73,7 +73,7 @@
 #define PXMAP_DPOINTS		10
 
 #define N_PIXMAP			15
-#define N_DIGITS_PIXMAP		10
+#define N_DIGITS_PIXMAP		11
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */

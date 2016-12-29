@@ -44,7 +44,7 @@ int game_loop();
 
 int get_menu_y_coordinate(menu_option_t curr_option);
 
-void repaint(game_st* game_state, queens_st* queens_state);
+void repaint(game_st* game_state, queens_st* queens_state, date_t* date);
 
 void start_game(game_st* game_state, queens_st* queens_state);
 

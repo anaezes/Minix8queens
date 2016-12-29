@@ -2,7 +2,7 @@
 //#include <minix/drivers.h>
 //#include <machine/int86.h>
 
-#include "../lib/vbe.h"
+#include "vbe.h"
 
 #include "lmlib.h"
 

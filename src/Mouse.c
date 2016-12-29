@@ -1,4 +1,4 @@
-#include "../lib/Mouse.h"
+#include "Mouse.h"
 
 
 unsigned int mouse_hook_id = MOUSE_IRQ;

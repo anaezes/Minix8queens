@@ -1,5 +1,4 @@
-#include "../lib/8queens.h"
-#include "../lib/pixmap.h"
+#include "8queens.h"
 #include <limits.h>
 #include <string.h>
 #include <errno.h>

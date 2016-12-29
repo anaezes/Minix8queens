@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <math.h>
 
-#include "../lib/video_gr.h"
+#include "video_gr.h"
 
 
 

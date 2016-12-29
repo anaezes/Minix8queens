@@ -16,6 +16,7 @@ char** pixmap_get_digit(unsigned long xpm_code);
 char *read_xpm(char *map[], int *wd, int *ht);
 void load_pixmaps();
 pixmap_t get_pixmap(int pos);
+pixmap_t get_pixmap_digit(int pos);
 
 static char *mouse[] = {
 		/* columns rows colors chars-per-pixel */

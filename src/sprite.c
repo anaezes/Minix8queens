@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 
-#include "../lib/sprite.h"
+#include "sprite.h"
 
 
 /**Creates a new sprite with pixmap "pic", with specified

@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lib/pixmap.h"
-#include "../lib/vbe.h"
+#include "pixmap.h"
+#include "vbe.h"
 
 static pixmap_t *pixmaps;
 static pixmap_t *digits_pixmaps;
@@ -32,16 +32,21 @@ void load_pixmaps()
 	digits_pixmaps = malloc(sizeof(pixmap_t) * N_DIGITS_PIXMAP);
 	for(i = 0; i < N_DIGITS_PIXMAP; i++)
 	{
-		printf("pixmap:   i %d\n\n", i);
 		digits_pixmaps[i].pixmap = read_xpm(pixmap_get_digit(i), &width, &height);
 		digits_pixmaps[i].width = width;
 		digits_pixmaps[i].height = height;
 	}
 }
 
+
 pixmap_t get_pixmap(int pos)
 {
 	return pixmaps[pos-1];
+}
+
+pixmap_t get_pixmap_digit(int pos)
+{
+	return digits_pixmaps[pos];
 }
 
 char** pixmap_get_image(unsigned long xpm_code)

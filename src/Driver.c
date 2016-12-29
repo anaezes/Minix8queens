@@ -1,6 +1,6 @@
 // Implementation of simple mouse controller
 
-#include "../lib/Driver.h"
+#include "Driver.h"
 
 
 

@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <math.h>
 
-#include "../lib/8queens.h"
+#include "8queens.h"
 
 unsigned long packet[MOUSE_PACKET_SIZE];
 unsigned long config[MOUSE_CONFIG_SIZE];
@@ -204,17 +204,16 @@ int game_loop() {
 			}
 		}
 
-
 		if(game_state.curr_state == INIT && graphics_invalidated == 1)
 		{
-			repaint(&game_state,&queens_state);
+			repaint(&game_state,&queens_state, &curr_date);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
 
 		if(game_state.curr_state == SHOW_INSTRUCTIONS && graphics_invalidated == 1)
 		{
-			repaint(&game_state, &queens_state);
+			repaint(&game_state, &queens_state, &curr_date);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
@@ -238,7 +237,7 @@ int game_loop() {
 
 		if(game_state.curr_state == PLAY &&  graphics_invalidated == 1)
 		{
-			repaint(&game_state, &queens_state);
+			repaint(&game_state, &queens_state, &curr_date);
 			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 			graphics_invalidated = 0;
 		}
@@ -268,7 +267,6 @@ int game_loop() {
 		if((timer_get_ellapsed_time() - curr_time) >= 1)
 		{
 			curr_date = get_curr_date();
-			show_date(&curr_date);
 			curr_time = timer_get_ellapsed_time();
 		}
 
@@ -342,16 +340,18 @@ int get_menu_y_coordinate(menu_option_t curr_option)
 }
 
 
-void repaint(game_st* game_state, queens_st* queens_state)
+void repaint(game_st* game_state, queens_st* queens_state, date_t* date)
 {
 	if(game_state->curr_state == INIT)
 	{
 		vg_start();
+		show_date(date);
 		show_selected_menu(X_INIT_MENU, get_menu_y_coordinate(game_state->curr_option));
 	}
 	else if(game_state->curr_state == SHOW_INSTRUCTIONS)
 	{
 		vg_start();
+		show_date(date);
 		show_instructions();
 
 	}

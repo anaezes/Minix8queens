@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../lib/algorithm.h"
+#include "algorithm.h"
 
 int valid_left_diag(int matrix[SIZE][SIZE], int x, int y);
 

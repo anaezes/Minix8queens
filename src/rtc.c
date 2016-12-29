@@ -1,5 +1,5 @@
 /** @file */
-#include "../lib/rtc.h"
+#include "rtc.h"
 
 void wait_valid_rtc() {
 
@@ -110,6 +110,36 @@ date_t get_curr_date()
 
 void show_date(date_t* date)
 {
-	printf("Date: %d/%d/%d\n", date->day, date->month, date->year);
-	printf("%d : %d : %d\n", date->hour, date->min, date->sec);
+	//printf("Date: %d/%d/%d\n", date->day, date->month, date->year);
+	//printf("%d : %d : %d\n", date->hour, date->min, date->sec);
+
+	int first_digit = date->hour / 10;
+	int second_digit = date->hour % 10;
+
+	pixmap_t px = get_pixmap_digit(first_digit);
+	vg_draw_pixmap(695, 220, px.pixmap, px.width, px.height);
+	px = get_pixmap_digit(second_digit);
+	vg_draw_pixmap(740, 220, px.pixmap, px.width, px.height);
+	px = get_pixmap_digit(PXMAP_DPOINTS);
+	vg_draw_pixmap(785, 235, px.pixmap, px.width, px.height);
+
+
+	first_digit = date->min / 10;
+	second_digit = date->min % 10;
+
+	px = get_pixmap_digit(first_digit);
+	vg_draw_pixmap(805, 220, px.pixmap, px.width, px.height);
+	px = get_pixmap_digit(second_digit);
+	vg_draw_pixmap(850, 220, px.pixmap, px.width, px.height);
+	px = get_pixmap_digit(PXMAP_DPOINTS);
+	vg_draw_pixmap(895, 235, px.pixmap, px.width, px.height);
+
+	first_digit = date->sec / 10;
+	second_digit = date->sec % 10;
+
+	px = get_pixmap_digit(first_digit);
+	vg_draw_pixmap(915, 220, px.pixmap, px.width, px.height);
+	px = get_pixmap_digit(second_digit);
+	vg_draw_pixmap(960, 220, px.pixmap, px.width, px.height);
+
 }

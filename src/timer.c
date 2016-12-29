@@ -1,7 +1,7 @@
 #include <minix/syslib.h>
 #include <minix/com.h>
 #include <minix/drivers.h>
-#include "../lib/i8254.h"
+#include "i8254.h"
 
 // global variables for timer_test_int()
 unsigned int hook_id = TIMER0_IRQ;

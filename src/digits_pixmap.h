@@ -5,8 +5,8 @@
 static char *zero[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"+ 0",
-		"= 7",
+		"+ 6",
+		"= 56",
 		"; 2",
 		/* pixels */
 		";;;;;;;;;++++++++++++++++++++++;;;;;;;;;",
@@ -84,12 +84,13 @@ static char *zero[] = {
 		";;;;;;;;;++++++++++++++++++++++;;;;;;;;;"
 };
 
+
 /* XPM */
 static char *one[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		". o",
-		"O 7",
+		". 6",
+		"o 56",
 		"# 2",
 		/* pixels */
 		"#########oooooooooooooooooooooo#########",
@@ -172,8 +173,8 @@ static char *one[] = {
 static char *two[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"o 0",
-		"@ 7",
+		"o 6",
+		"@ 56",
 		"$ 2",
 		/* pixels */
 		"$$$$$$$$$oooooooooooooooooooooo$$$$$$$$$",
@@ -256,8 +257,8 @@ static char *two[] = {
 static char *three[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"@ 0",
-		"; 7",
+		"@ 6",
+		"; 56",
 		", 2",
 		/* pixels */
 		",,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,",
@@ -340,8 +341,8 @@ static char *three[] = {
 static char *four[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"0 0",
-		"; 7",
+		"0 6",
+		"; 56",
 		"> 2",
 		/* pixels */
 		">>>>>>>>>>;;;;;;;;;;;;;;;;;;;;>>>>>>>>>>",
@@ -423,8 +424,8 @@ static char *four[] = {
 static char *five[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"o 0",
-		"@ 7",
+		"o 6",
+		"@ 56",
 		"$ 2",
 		/* pixels */
 		"$$$$$$$$$oooooooooooooooooooooo$$$$$$$$$",
@@ -507,8 +508,8 @@ static char *five[] = {
 static char *six[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"+ 0",
-		"= 7",
+		"+ 6",
+		"= 56",
 		": 2",
 		/* pixels */
 		":::::::::++++++++++++++++++++++:::::::::",
@@ -591,8 +592,8 @@ static char *six[] = {
 static char *seven[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"X 0",
-		"@ 7",
+		"X 6",
+		"@ 56",
 		"% 2",
 		/* pixels */
 		"%%%%%%%%%XXXXXXXXXXXXXXXXXXXXXX%%%%%%%%%",
@@ -674,7 +675,7 @@ static char *seven[] = {
 static char *eight[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 2",
-		"o 0",
+		"o 6",
 		"# 2",
 		/* pixels */
 		"#########oooooooooooooooooooooo#########",
@@ -757,8 +758,8 @@ static char *eight[] = {
 static char *nine[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 3",
-		"o 0",
-		"+ 7",
+		"o 6",
+		"+ 56",
 		"$ 2",
 		/* pixels */
 		"$$$$$$$$$oooooooooooooooooooooo$$$$$$$$$",
@@ -841,7 +842,7 @@ static char *nine[] = {
 static char *points[] = {
 		/* columns rows colors chars-per-pixel */
 		"15 42 2",
-		"o 0",
+		"o 6",
 		"% 2",
 		/* pixels */
 		"%%%%%%ooo%%%%%%",
