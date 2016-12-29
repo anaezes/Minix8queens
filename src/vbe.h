@@ -20,60 +20,62 @@
  *
  * Packed VBE Mode Info Block 
  */ 
-#define PB2BASE(x) 			(((x) >> 4) & 0x0F000)
-#define PB2OFF(x) 			((x) & 0x0FFFF)
-#define LINEAR_MODEL_BIT 	BIT(14)
-#define VRAM_PHYS_ADDR		0xE0000000
-#define H_RES    	        1024
-#define V_RES			 	768
-#define BITS_PER_PIXEL		8
-#define VBE_MODE 			0x4F02
-#define VBE_GET_MODE 		0x4F01
-#define VBE_CONTROL_INFO 	0x4F00
-#define INTERRUPT_VBE 		0x10
-#define GRAPHIC_MODE 		0x105
-#define VBE_MODE_SIZE 		256
+#define PB2BASE(x) 					(((x) >> 4) & 0x0F000)
+#define PB2OFF(x) 					((x) & 0x0FFFF)
+#define LINEAR_MODEL_BIT 			BIT(14)
+#define VRAM_PHYS_ADDR				0xE0000000
+#define H_RES    	       			1024
+#define V_RES			 			768
+#define BITS_PER_PIXEL				8
+#define VBE_MODE 					0x4F02
+#define VBE_GET_MODE 				0x4F01
+#define VBE_CONTROL_INFO 			0x4F00
+#define INTERRUPT_VBE 				0x10
+#define GRAPHIC_MODE 				0x105
+#define VBE_MODE_SIZE 				256
 
 //DEFINE COLORS
-#define COLOR_RED			4
-#define COLOR_GOLD			6
-#define COLOR_WHITE			63
-#define	COLOR_LIGHT_GREY	7
-#define COLOR_DARK_GREY		56
-#define COLOR_BLACK			0
+#define COLOR_RED					4
+#define COLOR_GOLD					6
+#define COLOR_WHITE					63
+#define	COLOR_LIGHT_GREY			7
+#define COLOR_DARK_GREY				56
+#define COLOR_BLACK					0
 
-#define BOARD_SIZE 			8
-#define N_QUEENS			8
-#define SQUARE_SIZE			82
+#define BOARD_SIZE 					8
+#define N_QUEENS					8
+#define SQUARE_SIZE					82
 
-#define X_INIT_QUEEN		251
-#define Y_INIT_QUEEN		35
+#define X_INIT_QUEEN				251
+#define Y_INIT_QUEEN				35
 
 //Inicial menu pixels coordinates
-#define X_INIT_MENU			300
-#define Y_INIT_MENU			400
+#define X_INIT_MENU					300
+#define Y_INIT_MENU					400
 
 // Pixmaps
-#define PXMAP_QUEEN			1
-#define PXMAP_SQUARE		2
-#define PXMAP_LOGO			3
-#define PXMAP_MENU			4
-#define PXMAP_LOGO1			5
-#define PXMAP_MOUSE			6
-#define PXMAP_GAME_OVER		7
-#define PXMAP_WIN			8
-#define PXMAP_SELECTED		9
-#define PXMAP_INSTRUCTS		10
-#define PXMAP_INSTRUCTS1	11
-#define PXMAP_INSTRUCTS2	12
-#define PXMAP_INSTRUCTS3	13
-#define PXMAP_OPTIONS		14
-#define PXMAP_QUEEN2		15
+#define PXMAP_QUEEN					1
+#define PXMAP_SQUARE				2
+#define PXMAP_LOGO					3
+#define PXMAP_MENU					4
+#define PXMAP_LOGO1					5
+#define PXMAP_MOUSE					6
+#define PXMAP_GAME_OVER				7
+#define PXMAP_WIN					8
+#define PXMAP_SELECTED				9
+#define PXMAP_INSTRUCTS				10
+#define PXMAP_INSTRUCTS1			11
+#define PXMAP_INSTRUCTS2			12
+#define PXMAP_INSTRUCTS3			13
+#define PXMAP_OPTIONS				14
+#define PXMAP_QUEEN2				15
 
-#define PXMAP_DPOINTS		10
+#define PXMAP_DPOINTS				10
+#define PXMAP_SPOINTS				10
 
-#define N_PIXMAP			15
-#define N_DIGITS_PIXMAP		11
+#define N_PIXMAP					15
+#define N_DIGITS_PIXMAP				11
+#define N_SMALL_DIGITS_PIXMAP		11
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */

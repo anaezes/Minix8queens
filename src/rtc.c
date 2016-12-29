@@ -113,9 +113,9 @@ void show_date(date_t* date)
 	//printf("Date: %d/%d/%d\n", date->day, date->month, date->year);
 	//printf("%d : %d : %d\n", date->hour, date->min, date->sec);
 
+	//hour
 	int first_digit = date->hour / 10;
 	int second_digit = date->hour % 10;
-
 	pixmap_t px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(695, 220, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
@@ -123,10 +123,9 @@ void show_date(date_t* date)
 	px = get_pixmap_digit(PXMAP_DPOINTS);
 	vg_draw_pixmap(785, 235, px.pixmap, px.width, px.height);
 
-
+	//minutes
 	first_digit = date->min / 10;
 	second_digit = date->min % 10;
-
 	px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(805, 220, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
@@ -134,12 +133,45 @@ void show_date(date_t* date)
 	px = get_pixmap_digit(PXMAP_DPOINTS);
 	vg_draw_pixmap(895, 235, px.pixmap, px.width, px.height);
 
+	//seconds
 	first_digit = date->sec / 10;
 	second_digit = date->sec % 10;
-
 	px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(915, 220, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
 	vg_draw_pixmap(960, 220, px.pixmap, px.width, px.height);
 
+	//day
+	first_digit = date->day / 10;
+	second_digit = date->day % 10;
+	px = get_pixmap_small_digit(first_digit);
+	vg_draw_pixmap(810, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(second_digit);
+	vg_draw_pixmap(830, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(PXMAP_SPOINTS);
+	vg_draw_pixmap(855, 205, px.pixmap, px.width, px.height);
+
+	//month
+	first_digit = date->month / 10;
+	second_digit = date->month % 10;
+	px = get_pixmap_small_digit(first_digit);
+	vg_draw_pixmap(865, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(second_digit);
+	vg_draw_pixmap(885, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(PXMAP_SPOINTS);
+	vg_draw_pixmap(905, 205, px.pixmap, px.width, px.height);
+
+	//year
+	px = get_pixmap_small_digit(2);
+	vg_draw_pixmap(920, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(0);
+	vg_draw_pixmap(940, 185, px.pixmap, px.width, px.height);
+
+	date->year = date->year % 100;
+	first_digit = date->year / 10;
+	second_digit = date->year % 10;
+	px = get_pixmap_small_digit(first_digit);
+	vg_draw_pixmap(960, 185, px.pixmap, px.width, px.height);
+	px = get_pixmap_small_digit(second_digit);
+	vg_draw_pixmap(980, 185, px.pixmap, px.width, px.height);
 }

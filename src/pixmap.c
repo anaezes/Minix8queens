@@ -12,6 +12,7 @@
 
 static pixmap_t *pixmaps;
 static pixmap_t *digits_pixmaps;
+static pixmap_t *small_digits_pixmaps;
 
 /**
  * Static load of all xpm images needed
@@ -36,8 +37,16 @@ void load_pixmaps()
 		digits_pixmaps[i].width = width;
 		digits_pixmaps[i].height = height;
 	}
-}
 
+	small_digits_pixmaps = malloc(sizeof(pixmap_t) * N_DIGITS_PIXMAP);
+	for(i = 0; i < N_SMALL_DIGITS_PIXMAP; i++)
+	{
+		printf("i: %d\n", i);
+		small_digits_pixmaps[i].pixmap = read_xpm(pixmap_get_small_digit(i), &width, &height);
+		small_digits_pixmaps[i].width = width;
+		small_digits_pixmaps[i].height = height;
+	}
+}
 
 pixmap_t get_pixmap(int pos)
 {
@@ -47,6 +56,11 @@ pixmap_t get_pixmap(int pos)
 pixmap_t get_pixmap_digit(int pos)
 {
 	return digits_pixmaps[pos];
+}
+
+pixmap_t get_pixmap_small_digit(int pos)
+{
+	return small_digits_pixmaps[pos];
 }
 
 char** pixmap_get_image(unsigned long xpm_code)
@@ -109,6 +123,34 @@ char** pixmap_get_digit(unsigned long xpm_code)
 		return nine;
 	else if(xpm_code == 10)
 		return points;
+	else
+		return NULL;
+}
+
+char** pixmap_get_small_digit(unsigned long xpm_code)
+{
+	if(xpm_code == 0)
+		return zero_small;
+	else if (xpm_code == 1)
+		return one_small;
+	else if(xpm_code == 2)
+		return two_small;
+	else if(xpm_code == 3)
+		return three_small;
+	else if(xpm_code == 4)
+		return four_small;
+	else if(xpm_code == 5)
+		return five_small;
+	else if(xpm_code == 6)
+		return six_small;
+	else if(xpm_code == 7)
+		return seven_small;
+	else if(xpm_code == 8)
+		return eight_small;
+	else if(xpm_code == 9)
+		return nine_small;
+	else if(xpm_code == 10)
+		return point;
 	else
 		return NULL;
 }
