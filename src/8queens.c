@@ -268,6 +268,9 @@ int game_loop() {
 		{
 			curr_date = get_curr_date();
 			curr_time = timer_get_ellapsed_time();
+
+			if(game_state.curr_state == INIT || game_state.curr_state == SHOW_INSTRUCTIONS)
+				show_date(&curr_date);
 		}
 
 		vg_display();
