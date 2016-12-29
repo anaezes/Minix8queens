@@ -10,8 +10,8 @@
 #include "vbe.h"
 #include "Common.h"
 
-#define MOUSE_HEIGHT	33
-#define MOUSE_WIDTH 	40
+#define MOUSE_HEIGHT	35
+#define MOUSE_WIDTH 	20
 #define MOUSE_INIT_X 	512
 #define MOUSE_INIT_Y	384
 
