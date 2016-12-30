@@ -2,16 +2,12 @@
 
 #include "Driver.h"
 
-
-
-/* General functions*/
-
 int kbc_read_status(unsigned long* stat)
 {
 	return sys_inb(KBC_STAT_REG, stat);
 }
 
-/* wait for inbuffer to be available */
+
 int kbc_wait_inbuffer()
 {
 	unsigned long stat;
@@ -34,8 +30,6 @@ int kbc_wait_inbuffer()
 }
 
 
-
-/* wait for outbuffer to be available */
 int kbc_wait_outbuffer(unsigned long *stat)
 {
 	unsigned int n_tries = 0;
@@ -102,8 +96,6 @@ int kbc_send_command(unsigned long cmd)
 }
 
 
-
-// warn kbc that we want to write to the mouse
 int kbc_signal_mouse_write()
 {
 	// can write ?
