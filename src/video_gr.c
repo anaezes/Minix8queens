@@ -7,8 +7,6 @@
 
 #include "video_gr.h"
 
-
-
 /* Constants for VBE 0x105 mode */
 
 /* The physical address may vary from VM to VM.
@@ -20,7 +18,6 @@
  */
 
 /* Private global variables */
-
 static char *video_mem = (char*)VRAM_PHYS_ADDR;		/* Process address to which VRAM is mapped */
 static unsigned h_res = H_RES;		/* Horizontal screen resolution in pixels */
 static unsigned v_res = V_RES;		/* Vertical screen resolution in pixels */
@@ -109,8 +106,6 @@ int vg_start()
 	//DRAW MENU
 	px = get_pixmap(PXMAP_MENU);
 	vg_draw_pixmap(300, 400, px.pixmap, px.width, px.height);
-
-	// RTC (?)
 
 	return 0;
 }
