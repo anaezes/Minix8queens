@@ -106,18 +106,5 @@ int valid_right_diag(int matrix[SIZE][SIZE], int x, int y)
 		j--;
 	}
 
-
 	return 1;
-}
-
-void printBoard(int matrix[SIZE][SIZE])
-{
-	int i, j;
-	for(i = 0; i < SIZE; i++)
-	{
-		for(j=0; j < SIZE; j++)
-			printf("%d ", matrix[i][j]);
-		printf("\n");
-	}
-	printf("\n\n");
 }
