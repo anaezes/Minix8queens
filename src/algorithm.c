@@ -83,7 +83,7 @@ int valid_right_diag(int matrix[SIZE][SIZE], int x, int y)
 {
 	int i, j;
 	int n_queens = 0;
-	if(x + y >= 5)
+	if(x + y > 6)
 	{
 		i = abs(x+y-(SIZE-1));
 		j = SIZE-1;
