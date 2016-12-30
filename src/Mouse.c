@@ -190,11 +190,6 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 
 	transform_mouse_values(state, packet);
 
-//	printf("x %d dx %d\n", state->curr_position_x, state->delta_x);
-//	printf("y %d dy %d\n", state->curr_position_y, state->delta_y);
-//	printf("yf: %d\n", (state->curr_position_y - state->delta_y + MOUSE_HEIGHT ));
-//	printf("xf: %d\n\n", (state->curr_position_x + state->delta_x + MOUSE_WIDTH));
-
 	if((state->curr_position_x + state->delta_x >= 0) && (state->curr_position_x + state->delta_x + MOUSE_WIDTH <= H_RES))
 		state->curr_position_x += state->delta_x;
 	else if(state->curr_position_x + state->delta_x < 0)
