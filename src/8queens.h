@@ -7,7 +7,6 @@
 #include "Keyboard.h"
 #include "Driver.h"
 #include "pixmap.h"
-#include "sprite.h"
 #include "Mouse.h"
 #include "algorithm.h"
 #include "rtc.h"

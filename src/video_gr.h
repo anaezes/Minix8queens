@@ -2,7 +2,6 @@
 #define __VIDEO_GR_H
 
 #include "vbe.h"
-#include "sprite.h"
 #include "pixmap.h"
 
 //#include "lmlib.h"
