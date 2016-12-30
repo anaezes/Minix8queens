@@ -11,6 +11,7 @@ unsigned long packet[MOUSE_PACKET_SIZE];
 unsigned long config[MOUSE_CONFIG_SIZE];
 unsigned int pos = 0;
 
+
 game_st init_game()
 {
 	game_st state;
@@ -34,7 +35,6 @@ game_st init_game()
 
 	return state;
 }
-
 
 queens_st init_queens()
 {
@@ -166,7 +166,6 @@ int game_loop() {
 
 				if (msg.NOTIFY_ARG & irq_set) {
 					int n_bytes = kb_int_handler(&scancode);
-					kb_print_scancode(scancode, n_bytes);
 					//set state machine in the last state
 					if(game_state.curr_state == INIT &&
 							((scancode == DRIVER_END_SCODE) || (game_state.curr_option == MENU_EXIT && scancode == KEY_ENTER)))
@@ -183,7 +182,6 @@ int game_loop() {
 					else if ((game_state.curr_state == INIT && game_state.curr_option == INIT_PLAY && scancode == KEY_ENTER) ||
 							((game_state.curr_state == PLAY || game_state.curr_state == WIN || game_state.curr_state == SOLUTION )
 									&& scancode == KEY_R))
-
 					{
 						game_state = init_game();
 						queens_state = init_queens();
@@ -252,11 +250,11 @@ int game_loop() {
 		if(game_state.curr_state == LOSE)
 		{
 			if((timer_get_ellapsed_time() - start_time) <= 5)
-				showGameOver();
+				show_game_over();
 			else
 			{
 				game_state.curr_state = SOLUTION;
-				showSolution();
+				show_solution();
 			}
 		}
 
@@ -385,18 +383,18 @@ void repaint(game_st* game_state, queens_st* queens_state, date_t* date)
 	{
 		vg_game();
 		print_queens(game_state);
-		showYouWin();
+		show_you_win();
 	}
 	else if(game_state->curr_state == LOSE)
 	{
 		vg_game();
 		print_queens(game_state);
-		showGameOver();
+		show_game_over();
 	}
 	else if(game_state->curr_state == SOLUTION)
 	{
 		vg_game();
-		showSolution();
+		show_solution();
 	}
 }
 
@@ -411,12 +409,9 @@ void start_game(game_st* game_state, queens_st* queens_state)
 
 	// draw queen
 	vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
-
 }
 
-/**
- * return 1 if mouse clicked
- * */
+
 int mouse_menu_click_handler(game_st* game_state, mouse_state* mouse)
 {
 	if(game_state->curr_state == INIT)
@@ -542,7 +537,6 @@ int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned in
 	return 0;
 }
 
-
 int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
 
 	int x_coord;
@@ -567,7 +561,7 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 				queens_state->x = X_INIT_QUEEN;
 
 			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
-			switchColor(queens_state);
+			switch_color(queens_state);
 		}
 		break;
 	case KEY_LEFT:
@@ -586,7 +580,7 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 			queens_state->x -= 81;
 
 			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
-			switchColor(queens_state);
+			switch_color(queens_state);
 		}
 		break;
 	case KEY_UP:
@@ -605,7 +599,7 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 			queens_state->y -= 81;
 
 			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
-			switchColor(queens_state);
+			switch_color(queens_state);
 		}
 		break;
 	case KEY_DOWN: //down
@@ -625,7 +619,7 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 				queens_state->y = Y_INIT_QUEEN;
 
 			vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
-			switchColor(queens_state);
+			switch_color(queens_state);
 		}
 
 		break;
@@ -678,7 +672,7 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 	return 0;
 }
 
-void switchColor(queens_st* queens_state)
+void switch_color(queens_st* queens_state)
 {
 	if(queens_state->color == COLOR_DARK_GREY)
 		queens_state->color = COLOR_WHITE;
@@ -686,29 +680,19 @@ void switchColor(queens_st* queens_state)
 		queens_state->color = COLOR_DARK_GREY;
 }
 
-void showGameOver()
+void show_game_over()
 {
 	pixmap_t px = get_pixmap(PXMAP_GAME_OVER);
 	vg_draw_pixmap(297, 330, px.pixmap, px.width, px.height);
 }
 
-void showYouWin()
+void show_you_win()
 {
 	pixmap_t px = get_pixmap(PXMAP_WIN);
 	vg_draw_pixmap(354, 338, px.pixmap, px.width, px.height);
 }
 
-void showOptions()
-{
-	//	int width;
-	//	int height;
-	//	char** win = pixmap_get_image(8);
-	//	char* pixmap = read_xpm(win, &width, &height);
-	//
-	//	vg_draw_pixmap(379, 338, pixmap, width, height);
-}
-
-void showSolution()
+void show_solution()
 {
 	vg_game();
 	vg_draw_rectangle(30, 716, 964, 30, 56);
