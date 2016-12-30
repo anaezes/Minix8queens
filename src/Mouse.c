@@ -4,7 +4,6 @@
 unsigned int mouse_hook_id = MOUSE_IRQ;
 
 
-/* Mouse functions */
 mouse_state init_mouse_state()
 {
 	mouse_state state;
@@ -15,7 +14,7 @@ mouse_state init_mouse_state()
 	return state;
 }
 
-// subscribes and enables mouse interrupts
+
 int mouse_subscribe_int(void)
 {
 	// subscribes to interrupts IRQ 1
@@ -29,8 +28,6 @@ int mouse_subscribe_int(void)
 }
 
 
-
-// unsubscribes mouse interrupts
 int mouse_unsubscribe_int()
 {
 	if(sys_irqrmpolicy(&mouse_hook_id) == OK)
