@@ -38,5 +38,7 @@ void mouse_print_packet(unsigned long*);
 void mouse_print_config(unsigned long*);
 void xy_abs_values(unsigned long*);
 void update_mouse_state(mouse_state*, unsigned long*);
+int is_mouse_click(mouse_state* state, int previous_left_b);
+
 
 #endif

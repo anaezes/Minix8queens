@@ -12,7 +12,7 @@
 #include "algorithm.h"
 #include "rtc.h"
 
-typedef enum {INIT, SHOW_INSTRUCTIONS, PLAY, WIN, LOSE, END_PLAY, END} state_t;
+typedef enum {INIT, SHOW_INSTRUCTIONS, PLAY, WIN, LOSE, SOLUTION, END} state_t;
 typedef enum {INSTRUCTIONS, INIT_PLAY, MENU_EXIT} menu_option_t;
 
 typedef struct game_st
@@ -24,6 +24,7 @@ typedef struct game_st
 	char* graphics_state;
 	int xi, yi, widthR, heightR;
 	unsigned int colorR;
+	int previous_mouse_left_b;
 
 } game_st;
 
@@ -51,6 +52,10 @@ void start_game(game_st* game_state, queens_st* queens_state);
 void highlight_menu_option(unsigned long scancode, game_st* game_state);
 
 void switchColor(queens_st* queens_state);
+
+int mouse_move_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state);
+
+int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned int* y_coord);
 
 void showGameOver();
 

@@ -17,6 +17,7 @@ game_st init_game()
 	state.curr_state = INIT;
 	state.curr_option = INSTRUCTIONS;
 	state.graphics_state = NULL;
+	state.previous_mouse_left_b= 0;
 	state.n_queens = 0;
 
 	int i, j;
@@ -116,13 +117,17 @@ int game_loop() {
 
 					sys_inb(KBC_DATA_BUFFER, &packet[pos]);
 
-
 					if(((packet[0] & BIT(3)) && (packet[0] != KBC_ACK)) != 0) {
 						pos = (pos + 1) % MOUSE_PACKET_SIZE;
 
 						if (pos == 2) {
+							game_state.previous_mouse_left_b = state.l_button_state;
 							update_mouse_state(&state, packet);
 							graphics_invalidated = 1;
+
+
+							if(game_state.curr_state == PLAY && is_mouse_click(&state, game_state.previous_mouse_left_b))
+								mouse_move_handler(&state, &queens_state, &game_state);
 
 							if(mouse_menu_click_handler(&game_state, &state) == 1)
 							{
@@ -176,8 +181,9 @@ int game_loop() {
 					}
 					// start or restart game
 					else if ((game_state.curr_state == INIT && game_state.curr_option == INIT_PLAY && scancode == KEY_ENTER) ||
-							(game_state.curr_state == PLAY && scancode == KEY_R) ||
-							(game_state.curr_state == END_PLAY && scancode == KEY_R))
+							((game_state.curr_state == PLAY || game_state.curr_state == WIN || game_state.curr_state == SOLUTION )
+									&& scancode == KEY_R))
+
 					{
 						game_state = init_game();
 						queens_state = init_queens();
@@ -193,7 +199,7 @@ int game_loop() {
 						show_inst = 0;
 					}
 					else if(game_state.curr_state == PLAY)
-						move_handler(scancode, &queens_state, &game_state);
+						kb_move_handler(scancode, &queens_state, &game_state);
 					else if(game_state.curr_state == INIT && (scancode == KEY_DOWN || scancode == KEY_UP))
 						highlight_menu_option(scancode, &game_state);
 
@@ -250,19 +256,12 @@ int game_loop() {
 			else
 			{
 				showSolution();
-				game_state.curr_state = END_PLAY;
+				game_state.curr_state = SOLUTION;
 			}
 		}
 
 		if(game_state.curr_state == WIN)
-		{
-			showYouWin();
-			game_state.curr_state = END_PLAY;
-		}
-
-
-		if(game_state.curr_state == END_PLAY)
-			showOptions();
+			repaint(&game_state, &queens_state, &curr_date);
 
 		if((timer_get_ellapsed_time() - curr_time) >= 1)
 		{
@@ -367,13 +366,16 @@ void repaint(game_st* game_state, queens_st* queens_state, date_t* date)
 	}
 	else if(game_state->curr_state == WIN)
 	{
-
+		vg_game();
+		print_time_bar(game_state);
+		print_queens(game_state);
+		showYouWin();
 	}
 	else if(game_state->curr_state == LOSE)
 	{
 
 	}
-	else if(game_state->curr_state == END_PLAY)
+	else if(game_state->curr_state == SOLUTION)
 	{
 
 	}
@@ -451,7 +453,78 @@ int mouse_menu_handler(game_st* game_state, mouse_state* mouse)
 	}
 	return -1;
 }
-int move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
+
+
+
+int mouse_move_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state) {
+
+	if(mouse->l_button_state == 0)
+		return 1;
+
+	unsigned int x_coord;
+	unsigned int y_coord;
+
+	if(get_board_coordinates(mouse, &x_coord, &y_coord) == 1)
+		return 1;
+
+
+	printf("x_coord %d\n", x_coord);
+	printf("y_coord %d\n", y_coord);
+
+	int x = 251 + x_coord * 81;
+	int y = 35 + y_coord * 81;
+
+	game_state->board[y_coord][x_coord] = 1;
+	if(!is_valid(game_state->board, x_coord, y_coord))
+		game_state->board[y_coord][x_coord] = 0;
+	else
+	{
+		pixmap_t px = get_pixmap(PXMAP_QUEEN);
+		vg_draw_pixmap(x+3, y+5, px.pixmap, px.width, px.height);
+
+		game_state->n_queens++;
+		printf("n_queens %d\n", game_state->n_queens);
+		if(game_state->n_queens < N_QUEENS)
+		{
+			if(game_state->board[0][0] == 1)
+			{
+				queens_state->x = X_INIT_QUEEN+81;
+				queens_state->color = COLOR_DARK_GREY;
+			}
+			else
+			{
+				queens_state->x = X_INIT_QUEEN;
+				queens_state->color = COLOR_WHITE;
+			}
+
+			queens_state->y = Y_INIT_QUEEN;
+			//vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
+		}
+		else
+			game_state->curr_state = WIN;
+	}
+
+	return 0;
+}
+
+int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned int* y_coord)
+{
+	*x_coord = (mouse->curr_position_x - 251) / 81;
+	*y_coord = (mouse->curr_position_y - 35) / 81;
+
+	if(*x_coord > 7 || *y_coord > 7)
+		return 1;
+
+	return 0;
+}
+
+
+
+
+
+
+
+int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
 
 	int x_coord;
 	int y_coord;
@@ -544,7 +617,6 @@ int move_handler(unsigned long code, queens_st* queens_state, game_st* game_stat
 		y_coord = (queens_state->y - Y_INIT_QUEEN)/81;
 
 		game_state->board[y_coord][x_coord] = 1;
-		printBoard(game_state->board);
 		if(!is_valid(game_state->board, x_coord, y_coord))
 		{
 			game_state->board[y_coord][x_coord] = 0;

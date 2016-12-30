@@ -213,3 +213,7 @@ void update_mouse_state(mouse_state* state, unsigned long *packet)
 }
 
 
+int is_mouse_click(mouse_state* state, int previous_left_b)
+{
+	return (state->l_button_state == 1) && (previous_left_b == 0);
+}
