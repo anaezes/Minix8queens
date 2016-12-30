@@ -5,42 +5,6 @@
 int special = 0;
 unsigned int kbc_kb_hook_id = KB_IRQ;
 
-void kb_print_scancode(unsigned long scancode, int n_bytes)
-{
-	if(special == 0)
-	{
-		if(is_break_code(scancode))
-		{
-			if(n_bytes == 2)
-				special = 1;
-			else
-				printf("Breakcode: 0x%02X\n\n", scancode);
-		}
-		else
-		{
-			if(n_bytes == 2)
-				special = 1;
-			else
-				printf("Makecode: 0x%02X\n", scancode);
-		}
-	}
-	else
-	{
-		if(is_break_code(scancode))
-		{
-			printf("Breakcode: 0xE0%02X \n\n", scancode);
-			special = 0;
-		}
-		else
-		{
-			printf("Makecode: 0xE0%02X \n", scancode);
-			special = 0;
-		}
-	}
-
-
-}
-
 // subscribes and enables keyboard interrupts
 int kb_subscribe_int(void)
 {
@@ -80,15 +44,6 @@ int kb_int_handler(unsigned long *scancode)
 
 	return -1;
 }
-
-int kb_int_handler_asm(unsigned long scancode)
-{
-	if(kb_is_special_scancode(scancode))
-		return 2;
-	else
-		return 1;
-}
-
 
 
 
