@@ -1,4 +1,6 @@
-/** @file */
+#include <minix/syslib.h>
+#include <minix/com.h>
+#include <minix/drivers.h>
 #include "rtc.h"
 
 date_t init_date()
