@@ -3,7 +3,7 @@
 #include <minix/drivers.h>
 #include "i8254.h"
 
-// global variables for timer_test_int()
+// Global variables for timer_test_int()
 unsigned int hook_id = TIMER0_IRQ;
 unsigned int counter = 0;
 unsigned int time_in_seconds = 0;
@@ -14,7 +14,7 @@ unsigned int timer_get_ellapsed_time()
 	return time_in_seconds;
 }
 
-// subscribes and enables timer 0 interrupts
+
 int timer_subscribe_int(void)
 {
 	unsigned int tmp = hook_id;
@@ -27,7 +27,7 @@ int timer_subscribe_int(void)
 	return -1;
 }
 
-// unsubscribes timer 0 interrupts
+
 int timer_unsubscribe_int()
 {
 	if(sys_irqrmpolicy(&hook_id) == OK)
@@ -37,7 +37,7 @@ int timer_unsubscribe_int()
 	return 1;
 }
 
-// increments counter
+
 void timer_int_handler()
 {
 	counter ++;
@@ -46,7 +46,7 @@ void timer_int_handler()
 		time_in_seconds++;
 }
 
-// tests timer 0 interrupt handling
+
 int timer_delay(unsigned long time)
 {
 	counter = 0;
