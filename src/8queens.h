@@ -53,7 +53,7 @@ void highlight_menu_option(unsigned long scancode, game_st* game_state);
 
 void switchColor(queens_st* queens_state);
 
-int mouse_move_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state);
+int mouse_click_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state);
 
 int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned int* y_coord);
 

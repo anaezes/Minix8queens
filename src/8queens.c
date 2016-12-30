@@ -127,7 +127,7 @@ int game_loop() {
 
 
 							if(game_state.curr_state == PLAY && is_mouse_click(&state, game_state.previous_mouse_left_b))
-								mouse_move_handler(&state, &queens_state, &game_state);
+								mouse_click_handler(&state, &queens_state, &game_state);
 
 							if(mouse_menu_click_handler(&game_state, &state) == 1)
 							{
@@ -161,7 +161,6 @@ int game_loop() {
 					}
 				}
 
-
 				if (msg.NOTIFY_ARG & timer_irq)
 					timer_int_handler();
 
@@ -176,8 +175,9 @@ int game_loop() {
 					else if(game_state.curr_state != INIT && scancode == DRIVER_END_SCODE)
 					{
 						game_state.curr_state = INIT;
-						vg_start();
+						repaint(&game_state,&queens_state, &curr_date);
 						show_selected_menu(X_INIT_MENU, Y_INIT_MENU	);
+						vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
 					}
 					// start or restart game
 					else if ((game_state.curr_state == INIT && game_state.curr_option == INIT_PLAY && scancode == KEY_ENTER) ||
@@ -255,13 +255,31 @@ int game_loop() {
 				showGameOver();
 			else
 			{
-				showSolution();
 				game_state.curr_state = SOLUTION;
+				showSolution();
 			}
 		}
 
-		if(game_state.curr_state == WIN)
+		if(game_state.curr_state == WIN && graphics_invalidated == 1)
+		{
 			repaint(&game_state, &queens_state, &curr_date);
+			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+			graphics_invalidated = 0;
+		}
+
+		if(game_state.curr_state == LOSE && graphics_invalidated == 1)
+		{
+			repaint(&game_state, &queens_state, &curr_date);
+			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+			graphics_invalidated = 0;
+		}
+
+		if(game_state.curr_state == SOLUTION && graphics_invalidated == 1)
+		{
+			repaint(&game_state, &queens_state, &curr_date);
+			vg_draw_mouse_pointer(state.curr_position_x,state.curr_position_y);
+			graphics_invalidated = 0;
+		}
 
 		if((timer_get_ellapsed_time() - curr_time) >= 1)
 		{
@@ -355,7 +373,6 @@ void repaint(game_st* game_state, queens_st* queens_state, date_t* date)
 		vg_start();
 		show_date(date);
 		show_instructions();
-
 	}
 	else if(game_state->curr_state == PLAY)
 	{
@@ -367,17 +384,19 @@ void repaint(game_st* game_state, queens_st* queens_state, date_t* date)
 	else if(game_state->curr_state == WIN)
 	{
 		vg_game();
-		print_time_bar(game_state);
 		print_queens(game_state);
 		showYouWin();
 	}
 	else if(game_state->curr_state == LOSE)
 	{
-
+		vg_game();
+		print_queens(game_state);
+		showGameOver();
 	}
 	else if(game_state->curr_state == SOLUTION)
 	{
-
+		vg_game();
+		showSolution();
 	}
 }
 
@@ -456,7 +475,7 @@ int mouse_menu_handler(game_st* game_state, mouse_state* mouse)
 
 
 
-int mouse_move_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state) {
+int mouse_click_handler(mouse_state* mouse, queens_st* queens_state, game_st* game_state) {
 
 	if(mouse->l_button_state == 0)
 		return 1;
@@ -467,42 +486,47 @@ int mouse_move_handler(mouse_state* mouse, queens_st* queens_state, game_st* gam
 	if(get_board_coordinates(mouse, &x_coord, &y_coord) == 1)
 		return 1;
 
-
-	printf("x_coord %d\n", x_coord);
-	printf("y_coord %d\n", y_coord);
-
 	int x = 251 + x_coord * 81;
 	int y = 35 + y_coord * 81;
 
-	game_state->board[y_coord][x_coord] = 1;
-	if(!is_valid(game_state->board, x_coord, y_coord))
-		game_state->board[y_coord][x_coord] = 0;
+	if(game_state->board[y_coord][x_coord] == 0)
+	{
+		game_state->board[y_coord][x_coord] = 1;
+
+		if(!is_valid(game_state->board, x_coord, y_coord))
+			game_state->board[y_coord][x_coord] = 0;
+		else
+		{
+			pixmap_t px = get_pixmap(PXMAP_QUEEN);
+			vg_draw_pixmap(x+3, y+5, px.pixmap, px.width, px.height);
+
+			game_state->n_queens++;
+		}
+	}
 	else
 	{
-		pixmap_t px = get_pixmap(PXMAP_QUEEN);
-		vg_draw_pixmap(x+3, y+5, px.pixmap, px.width, px.height);
+		game_state->board[y_coord][x_coord] = 0;
+		game_state->n_queens--;
+	}
 
-		game_state->n_queens++;
-		printf("n_queens %d\n", game_state->n_queens);
-		if(game_state->n_queens < N_QUEENS)
+
+	if(game_state->n_queens < N_QUEENS)
+	{
+		if(game_state->board[0][0] == 1)
 		{
-			if(game_state->board[0][0] == 1)
-			{
-				queens_state->x = X_INIT_QUEEN+81;
-				queens_state->color = COLOR_DARK_GREY;
-			}
-			else
-			{
-				queens_state->x = X_INIT_QUEEN;
-				queens_state->color = COLOR_WHITE;
-			}
-
-			queens_state->y = Y_INIT_QUEEN;
-			//vg_draw_pixmap(queens_state->x+3, queens_state->y+5, queens_state->px.pixmap, queens_state->px.width, queens_state->px.height);
+			queens_state->x = X_INIT_QUEEN+81;
+			queens_state->color = COLOR_DARK_GREY;
 		}
 		else
-			game_state->curr_state = WIN;
+		{
+			queens_state->x = X_INIT_QUEEN;
+			queens_state->color = COLOR_WHITE;
+		}
+
+		queens_state->y = Y_INIT_QUEEN;
 	}
+	else
+		game_state->curr_state = WIN;
 
 	return 0;
 }
@@ -517,11 +541,6 @@ int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned in
 
 	return 0;
 }
-
-
-
-
-
 
 
 int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_state) {
