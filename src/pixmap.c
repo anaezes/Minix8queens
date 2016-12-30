@@ -14,9 +14,6 @@ static pixmap_t *pixmaps;
 static pixmap_t *digits_pixmaps;
 static pixmap_t *small_digits_pixmaps;
 
-/**
- * Static load of all xpm images needed
- * */
 void load_pixmaps()
 {
 	int width, height;
@@ -154,10 +151,7 @@ char** pixmap_get_small_digit(unsigned long xpm_code)
 	else
 		return NULL;
 }
-/**
- *  @author Joao Cardoso (jcard@fe.up.pt) ????
- *  Added by pfs@fe.up.pt
- */
+
 
 char *read_xpm(char *map[], int *wd, int *ht)
 {

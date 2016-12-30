@@ -11,14 +11,68 @@ typedef struct pixmap_t
 	int height;
 } pixmap_t;
 
+
+/**
+ * Return pixmap with the given xpm code
+ * @param xpm code
+ * @return pixmap
+ * */
 char** pixmap_get_image(unsigned long xpm_code);
+
+
+/**
+ * Return digit pixmap with the given xpm code
+ * @param xpm code
+ * @return pixmap
+ * */
 char** pixmap_get_digit(unsigned long xpm_code);
-char *read_xpm(char *map[], int *wd, int *ht);
-void load_pixmaps();
-pixmap_t get_pixmap(int pos);
-pixmap_t get_pixmap_digit(int pos);
+
+
+/**
+ * Return small digit pixmap with the given xpm code
+ * @param xpm code
+ * @return pixmap
+ * */
 char** pixmap_get_small_digit(unsigned long xpm_code);
+
+
+/**
+ *  @author Joao Cardoso (jcard@fe.up.pt) ????
+ *  Added by pfs@fe.up.pt
+ */
+char *read_xpm(char *map[], int *wd, int *ht);
+
+
+/**
+ * Static load of all xpm images needed
+ * */
+void load_pixmaps();
+
+
+/**
+ * returns a pixmap struct
+ * @param index
+ * @return pixmap_t
+ * */
+pixmap_t get_pixmap(int pos);
+
+
+/**
+ * returns a digit pixmap struct
+ * @param index
+ * @return pixmap_t
+ * */
+pixmap_t get_pixmap_digit(int pos);
+
+
+/**
+ * returns a small digit pixmap struct
+ * @param index
+ * @return pixmap_t
+ * */
 pixmap_t get_pixmap_small_digit(int pos);
+
+
 
 static char *mouse[] = {
 /* columns rows colors chars-per-pixel */
@@ -1413,11 +1467,5 @@ static char *options[] = {
 "...  .............  .......          ....   .......   .....        .  .......................................            ....           .........           ..",
 "...  .............  .........      .......  .......  ........     ..  ..........................................................      ..............     ....."
 };
-
-
-
-
-
-
 
 #endif /* __PIXMAP_H */
