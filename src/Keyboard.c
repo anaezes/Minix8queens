@@ -5,7 +5,6 @@
 int special = 0;
 unsigned int kbc_kb_hook_id = KB_IRQ;
 
-// subscribes and enables keyboard interrupts
 int kb_subscribe_int(void)
 {
 	// subscribes to interrupts IRQ 1
@@ -18,7 +17,7 @@ int kb_subscribe_int(void)
 	return -1;
 }
 
-// unsubscribes keyboard interrupts
+
 int kb_unsubscribe_int()
 {
 	if(sys_irqrmpolicy(&kbc_kb_hook_id) == OK)
