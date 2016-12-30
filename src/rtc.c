@@ -1,6 +1,22 @@
 /** @file */
 #include "rtc.h"
 
+date_t init_date()
+{
+	date_t date;
+
+	date.hour = 0;
+	date.min = 0;
+	date.sec = 0;
+
+	date.day = 0;
+	date.month = 0;
+	date.year = 0;
+
+	return date;
+}
+
+
 void wait_valid_rtc() {
 
 	unsigned long registA = 0;
@@ -25,31 +41,23 @@ int getTime(unsigned long* hour, unsigned long* min, unsigned long*sec) {
 
 	//get seconds
 	wait_valid_rtc();
-	if(sys_outb(RTC_ADDR_REG, RTC_SEC_ADDR))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, sec))
+	if(sys_outb(RTC_ADDR_REG, RTC_SEC_ADDR) || sys_inb(RTC_DATA_REG, sec))
 		return 1;
 
 	//get minutes
 	wait_valid_rtc();
-	if(sys_outb(RTC_ADDR_REG, RTC_MIN_ADDR))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, min))
+	if(sys_outb(RTC_ADDR_REG, RTC_MIN_ADDR) || sys_inb(RTC_DATA_REG, min))
 		return 1;
 
 	//get hours
 	wait_valid_rtc();
-	if (sys_outb(RTC_ADDR_REG, RTC_HOUR_ADDR))
-		return 1;
-	if (sys_inb(RTC_DATA_REG, hour))
+	if (sys_outb(RTC_ADDR_REG, RTC_HOUR_ADDR) || sys_inb(RTC_DATA_REG, hour))
 		return 1;
 
 	unsigned long time;
+	if(sys_outb(RTC_ADDR_REG, RTC_REG_B) || sys_inb(RTC_DATA_REG, &time))
+		return 1;
 
-	if(sys_outb(RTC_ADDR_REG, RTC_REG_B))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, &time))
-		return 1;
 
 	if(!(time & BIT(2)))
 	{
@@ -64,28 +72,19 @@ int getTime(unsigned long* hour, unsigned long* min, unsigned long*sec) {
 int getDate(unsigned long* day, unsigned long *month, unsigned long *year) {
 
 	//get day
-	if(sys_outb(RTC_ADDR_REG, RTC_DAY_ADDR))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, day))
+	if(sys_outb(RTC_ADDR_REG, RTC_DAY_ADDR) || sys_inb(RTC_DATA_REG, day))
 		return 1;
 
 	//get month
-	if(sys_outb(RTC_ADDR_REG, RTC_MONTH_ADDR))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, month))
+	if(sys_outb(RTC_ADDR_REG, RTC_MONTH_ADDR) || sys_inb(RTC_DATA_REG, month))
 		return 1;
 
 	//get year
-	if(sys_outb(RTC_ADDR_REG, RTC_YEAR_ADDR))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, year))
+	if(sys_outb(RTC_ADDR_REG, RTC_YEAR_ADDR) || sys_inb(RTC_DATA_REG, year))
 		return 1;
 
 	unsigned long date;
-
-	if(sys_outb(RTC_ADDR_REG, RTC_REG_B))
-		return 1;
-	if(sys_inb(RTC_DATA_REG, &date))
+	if(sys_outb(RTC_ADDR_REG, RTC_REG_B) || sys_inb(RTC_DATA_REG, &date))
 		return 1;
 
 	if(!(date & BIT(2)))
@@ -102,21 +101,27 @@ date_t get_curr_date()
 {
 	date_t date;
 
-	getTime(&date.hour, &date.min, &date.sec);
-	getDate(&date.day, &date.month, &date.year);
+	if(getTime(&date.hour, &date.min, &date.sec) || getDate(&date.day, &date.month, &date.year))
+		return init_date();
 
 	return date;
 }
 
+void compute_digits(int* first_digit, int* second_digit, unsigned long part)
+{
+	*first_digit = part / 10;
+	*second_digit = part % 10;
+}
+
 void show_date(date_t* date)
 {
-	//printf("Date: %d/%d/%d\n", date->day, date->month, date->year);
-	//printf("%d : %d : %d\n", date->hour, date->min, date->sec);
+	int first_digit;
+	int second_digit;
+	pixmap_t px;
 
 	//hour
-	int first_digit = date->hour / 10;
-	int second_digit = date->hour % 10;
-	pixmap_t px = get_pixmap_digit(first_digit);
+	compute_digits(&first_digit, &second_digit, date->hour);
+	px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(695, 200, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
 	vg_draw_pixmap(740, 200, px.pixmap, px.width, px.height);
@@ -124,8 +129,7 @@ void show_date(date_t* date)
 	vg_draw_pixmap(785, 215, px.pixmap, px.width, px.height);
 
 	//minutes
-	first_digit = date->min / 10;
-	second_digit = date->min % 10;
+	compute_digits(&first_digit, &second_digit, date->min);
 	px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(805, 200, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
@@ -134,16 +138,14 @@ void show_date(date_t* date)
 	vg_draw_pixmap(895, 215, px.pixmap, px.width, px.height);
 
 	//seconds
-	first_digit = date->sec / 10;
-	second_digit = date->sec % 10;
+	compute_digits(&first_digit, &second_digit, date->sec);
 	px = get_pixmap_digit(first_digit);
 	vg_draw_pixmap(915, 200, px.pixmap, px.width, px.height);
 	px = get_pixmap_digit(second_digit);
 	vg_draw_pixmap(960, 200, px.pixmap, px.width, px.height);
 
 	//day
-	first_digit = date->day / 10;
-	second_digit = date->day % 10;
+	compute_digits(&first_digit, &second_digit, date->day);
 	px = get_pixmap_small_digit(first_digit);
 	vg_draw_pixmap(810, 165, px.pixmap, px.width, px.height);
 	px = get_pixmap_small_digit(second_digit);
@@ -152,8 +154,7 @@ void show_date(date_t* date)
 	vg_draw_pixmap(855, 185, px.pixmap, px.width, px.height);
 
 	//month
-	first_digit = date->month / 10;
-	second_digit = date->month % 10;
+	compute_digits(&first_digit, &second_digit, date->month);
 	px = get_pixmap_small_digit(first_digit);
 	vg_draw_pixmap(865, 165, px.pixmap, px.width, px.height);
 	px = get_pixmap_small_digit(second_digit);
@@ -168,8 +169,7 @@ void show_date(date_t* date)
 	vg_draw_pixmap(940, 165, px.pixmap, px.width, px.height);
 
 	date->year = date->year % 100;
-	first_digit = date->year / 10;
-	second_digit = date->year % 10;
+	compute_digits(&first_digit, &second_digit, date->year);
 	px = get_pixmap_small_digit(first_digit);
 	vg_draw_pixmap(960, 165, px.pixmap, px.width, px.height);
 	px = get_pixmap_small_digit(second_digit);
