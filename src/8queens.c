@@ -194,6 +194,7 @@ int game_loop() {
 					else if(game_state.curr_state == INIT && game_state.curr_option == INSTRUCTIONS && scancode == KEY_ENTER)
 					{
 						game_state.curr_state = SHOW_INSTRUCTIONS;
+						show_instructions();
 						show_inst = 0;
 					}
 					else if(game_state.curr_state == PLAY)
