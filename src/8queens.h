@@ -11,6 +11,12 @@
 #include "algorithm.h"
 #include "rtc.h"
 
+/** @defgroup 8queens 8queens
+ * @{
+ *
+ * Contains the main game logic.
+ * All user interactions with the game will be handled here.
+ */
 
 /**
  * Game states
@@ -57,29 +63,29 @@ typedef struct queens_st
 
 
 /**
- * Init the game state struct
+ * @brief Init the game state struct.
  * @return game_st struct
  **/
 game_st init_game();
 
 
 /**
- * Init the moveable queen
+ * @brief Init the moveable queen.
  * @return queens_st struct
  **/
 queens_st init_queens();
 
 
 /**
- * Main game loop, where interruptions are read and
- * the game state is handled
+ * @brief Main game loop, where interruptions are read and
+ * the game state is handled.
  * @return 1 when a subscription to an interruption fails
  **/
 int game_loop();
 
 
 /**
- * Returns the coordinate on the Y axis of the given menu option
+ * @brief returns the coordinate on the Y axis of the given menu option
  * @param menu option
  * @return y coordinate
  **/
@@ -87,7 +93,7 @@ int get_menu_y_coordinate(menu_option_t curr_option);
 
 
 /**
- * Repaint the graphics.
+ * @brief Repaint the graphics.
  * @param current game state
  * @param current moveable queen state
  * @param current date as read in rtc
@@ -97,14 +103,14 @@ void repaint(game_st* game_state, queens_st* queens_state, date_t* date);
 
 
 /**
- * Init the graphics state of the game
+ * @brief Init the graphics state of the game
  * @param current game state
  * @param current moveable queen state
  **/
 void start_game(game_st* game_state, queens_st* queens_state);
 
 /**
- * Change game's state according to the selected menu option.
+ * @brief Change game's state according to the selected menu option.
  * @param current game state
  * @param current mouse state
  * @return 0 when no menu option was clicked
@@ -113,7 +119,7 @@ int mouse_menu_click_handler(game_st* game_state, mouse_state* mouse);
 
 
 /**
- * Highlight menu option with mouse hover
+ * @brief Highlight menu option with mouse hover
  * @param current game state
  * @param current mouse state
  * @return -1 when no menu option was hover
@@ -122,7 +128,7 @@ int mouse_menu_handler(game_st* game_state, mouse_state* mouse);
 
 
 /**
- * Highlight currently selected menu option.
+ * @brief Highlight currently selected menu option.
  * @param scancode of pressed key
  * @param current game state
  **/
@@ -130,14 +136,14 @@ void highlight_menu_option(unsigned long scancode, game_st* game_state);
 
 
 /**
- * Keep track of board cell color, where the moveable queen is.
+ * @brief Keep track of board cell color, where the moveable queen is.
  * @param current moveable queen state
  **/
 void switch_color(queens_st* queens_state);
 
 
 /**
- * Handle mouse click while playing, and change game's state accordingly.
+ * @brief Handle mouse click while playing, and change game's state accordingly.
  * @param current mouse state
  * @param current moveable queen state
  * @param current game state
@@ -146,7 +152,7 @@ int mouse_click_handler(mouse_state* mouse, queens_st* queens_state, game_st* ga
 
 
 /**
- * Maps mouse click coordinates to matrix coordinates, and save them in x_coord and y_coord.
+ * @brief Maps mouse click coordinates to matrix coordinates, and save them in x_coord and y_coord.
  * @param current mouse state
  * @param matrix X coordinate
  * @param matrix Y coordinate
@@ -156,7 +162,7 @@ int get_board_coordinates(mouse_state* mouse, unsigned int* x_coord, unsigned in
 
 
 /**
- * Handle keyboard while playing, and change game's state accordingly.
+ * @brief Handle keyboard while playing, and change game's state accordingly.
  * @param keyboard scancode
  * @param current moveable queen state
  * @param current game state
@@ -165,37 +171,37 @@ int kb_move_handler(unsigned long code, queens_st* queens_state, game_st* game_s
 
 
 /**
- * Display game over message.
+ * @brief Display game over message.
  **/
 void show_game_over();
 
 
 /**
- * Display win message.
+ * @brief Display win message.
  **/
 void show_you_win();
 
 
 /**
- * Display possible solution.
+ * @brief Display possible solution.
  * Called when play time ends.
  **/
 void show_solution();
 
 
 /**
- * Display board game's state
+ * @brief Display board game's state
  * @param current game state
  **/
 void print_queens(game_st* game_state);
 
 
 /**
- * Display time bar.
+ * @brief Display time bar.
  * @param current game state
  **/
 void print_time_bar(game_st* game_state);
 
-/** @} end of proj */
 
-#endif /* __PROJECT_H */
+/** @} end of 8queens */
+#endif /* __8QUEENS_H */

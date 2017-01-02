@@ -1,6 +1,14 @@
 #ifndef __ALGORITHM_H
 #define __ALGORITHM_H
 
+/** @defgroup algorithm
+ * @{
+ *
+ * Algorithm to validate game plays
+ *
+ */
+
+
 /**
  * Board size
  **/
@@ -8,7 +16,7 @@
 
 
 /**
- * Verify if a given queen position is valid.
+ * @brief Verify if a given queen position is valid.
  * @param game matrix
  * @param queen x coordinate
  * @param queen y coordinate
@@ -18,7 +26,7 @@ int is_valid(int matrix[SIZE][SIZE], int x, int y);
 
 
 /**
- * Verify the left diagonal of a given queen position.
+ * @brief Verify the left diagonal of a given queen position.
  * @param game matrix
  * @param queen x coordinate
  * @param queen y coordinate
@@ -28,7 +36,7 @@ int valid_left_diag(int matrix[SIZE][SIZE], int x, int y);
 
 
 /**
- * Verify the right diagonal of a given queen position.
+ * @brief Verify the right diagonal of a given queen position.
  * @param game matrix
  * @param queen x coordinate
  * @param queen y coordinate
@@ -36,4 +44,6 @@ int valid_left_diag(int matrix[SIZE][SIZE], int x, int y);
  **/
 int valid_right_diag(int matrix[SIZE][SIZE], int x, int y);
 
-#endif
+
+/** @} end of algorithm */
+#endif /* __ALGORITHM_H */

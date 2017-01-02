@@ -10,6 +10,13 @@
 #include "vbe.h"
 #include "Common.h"
 
+/** @defgroup Mouse Mouse
+ * @{
+ *
+ * Functions to interact with mouse.
+ *
+ */
+
 /**
  * Mouse pixmap height
  * */
@@ -54,42 +61,28 @@ typedef struct mouse_state
 
 
 /**
- * Init mouse state struct
+ * @brief Init mouse state struct
  * @return mouse state
  * */
 mouse_state init_mouse_state();
 
 
 /**
- * Subscribes and enables mouse interrupts.
+ * @brief Subscribes and enables mouse interrupts.
  * @return 0 if success
  * */
 int mouse_subscribe_int(void);
 
 
 /**
- * Unsubscribes mouse interrupts.
+ * @brief Unsubscribes mouse interrupts.
  * @return 0 if success
  * */
 int mouse_unsubscribe_int(void);
 
 
 /**
- * Print a given mouse packet.
- * @param mouse packet
- * */
-void mouse_print_packet(unsigned long*);
-
-
-/**
- * Print a given mouse config.
- * @param mouse packet
- * */
-void mouse_print_config(unsigned long*);
-
-
-/**
- * Parse mouse packets.
+ * @brief Parse mouse packets.
  * @param mouse state
  * @param mouse packet
  * */
@@ -105,11 +98,11 @@ void update_mouse_state(mouse_state*, unsigned long*);
 
 
 /**
- * Verifies if is mouse click.
+ * @brief Verifies if is mouse click.
  * @param mouse state
  * @param previous left button state
  * */
 int is_mouse_click(mouse_state*, int);
 
-
-#endif
+/** @} end of Mouse */
+#endif  /* __M_H */

@@ -1,7 +1,12 @@
 #ifndef __DIGITS_PIXMAP_H
 #define __DIGITS_PIXMAP_H
 
-/* XPM */
+/** @defgroup digits_pixmap digits_pixmap
+ * @{
+ *
+ * Contains static digits pixmaps
+ *
+ */
 static char *zero[] = {
 		/* columns rows colors chars-per-pixel */
 		"40 73 2",
@@ -1261,4 +1266,5 @@ static char *point[] = {
 "OOO..OOO"
 };
 
+/** @} end of digits_pixmap */
 #endif /* _LCOM_DIGITS_PIXMAP_H */

@@ -10,9 +10,17 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 
+/** @defgroup Driver Driver
+ * @{
+ *
+ * Functions to interact with kbc.
+ * Common to mouse and keyboard.
+ *
+ */
+
 
 /**
- * Reads a byte from the kbc state address.
+ * @brief Reads a byte from the kbc state address.
  * @param state byte
  * @return 0 if success
  * */
@@ -20,14 +28,14 @@ int kbc_read_status(unsigned long*);
 
 
 /**
- * Wait for kbc inbuffer to be available.
+ * @brief Wait for kbc inbuffer to be available.
  * @return 0 if success
  * */
 int kbc_wait_inbuffer();
 
 
 /**
- * wait for kbc outbuffer to be available.
+ * @brief wait for kbc outbuffer to be available.
  * @param state byte
  * @return 0 if success
  * */
@@ -35,7 +43,7 @@ int kbc_wait_outbuffer(unsigned long*);
 
 
 /**
- * Read byte from kbc input buffer.
+ * @brief Read byte from kbc input buffer.
  * @param state byte
  * @return 0 if success
  * */
@@ -43,7 +51,7 @@ int kbc_read_input(unsigned long*);
 
 
 /**
- * Write command to kbc output buffer.
+ * @brief Write command to kbc output buffer.
  * @param state byte
  * @return 0 if success
  * */
@@ -51,7 +59,7 @@ int kbc_send_command(unsigned long);
 
 
 /**
- * Signal mouse that we want to write a command to it.
+ * @brief Signal mouse that we want to write a command to it.
  * @return 0 if success
  * */
 int kbc_signal_mouse_write();
@@ -66,13 +74,13 @@ int kbc_write_to_mouse(unsigned long);
 
 
 /**
- * Clean the kbc input buffer
+ * @brief Clean the kbc input buffer
  * */
 void kbc_flush_data_buffer(void);
 
 
 /**
- * Enable mouse stream mode and sending of data packets
+ * @brief Enable mouse stream mode and sending of data packets
  * @return 0 if success
  * */
 int kbc_mouse_init();
@@ -80,4 +88,5 @@ int kbc_mouse_init();
 
 
 
-#endif
+/** @} end of driver */
+#endif /* __DRIVER_H */

@@ -152,5 +152,4 @@ typedef struct {
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p);
 
  /** @} end of vbe */
-
 #endif /* __VBE_H */

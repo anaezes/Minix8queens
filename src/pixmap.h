@@ -3,6 +3,12 @@
 
 #include "digits_pixmap.h"
 
+/** @defgroup pixmap pixmap
+ * @{
+ *
+ * Contains static pixmaps
+ *
+ */
 
 typedef struct pixmap_t
 {
@@ -13,7 +19,7 @@ typedef struct pixmap_t
 
 
 /**
- * Return pixmap with the given xpm code
+ * @brief Return pixmap with the given xpm code
  * @param xpm code
  * @return pixmap
  * */
@@ -21,7 +27,7 @@ char** pixmap_get_image(unsigned long xpm_code);
 
 
 /**
- * Return digit pixmap with the given xpm code
+ * @brief Return digit pixmap with the given xpm code
  * @param xpm code
  * @return pixmap
  * */
@@ -29,7 +35,7 @@ char** pixmap_get_digit(unsigned long xpm_code);
 
 
 /**
- * Return small digit pixmap with the given xpm code
+ * @brief Return small digit pixmap with the given xpm code
  * @param xpm code
  * @return pixmap
  * */
@@ -44,13 +50,13 @@ char *read_xpm(char *map[], int *wd, int *ht);
 
 
 /**
- * Static load of all xpm images needed
+ * @brief Static load of all xpm images needed
  * */
 void load_pixmaps();
 
 
 /**
- * returns a pixmap struct
+ * @brief returns a pixmap struct
  * @param index
  * @return pixmap_t
  * */
@@ -58,7 +64,7 @@ pixmap_t get_pixmap(int pos);
 
 
 /**
- * returns a digit pixmap struct
+ * @brief returns a digit pixmap struct
  * @param index
  * @return pixmap_t
  * */
@@ -66,7 +72,7 @@ pixmap_t get_pixmap_digit(int pos);
 
 
 /**
- * returns a small digit pixmap struct
+ * @brief returns a small digit pixmap struct
  * @param index
  * @return pixmap_t
  * */
@@ -1468,4 +1474,5 @@ static char *options[] = {
 "...  .............  .........      .......  .......  ........     ..  ..........................................................      ..............     ....."
 };
 
+/** @} end of pixmap */
 #endif /* __PIXMAP_H */
